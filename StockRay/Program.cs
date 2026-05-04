@@ -1,14 +1,26 @@
 
+using Microsoft.EntityFrameworkCore;
+using StockRay.Database;
+
 namespace StockRay
 {
     public class Program
     {
         public static void Main(string[] args)
         {
+
+            
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddAuthorization();
+
+            builder.Services.AddDbContext<ApplicationDbContext>(
+                options => options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString"))
+                );
+          
+           
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
@@ -24,12 +36,6 @@ namespace StockRay
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
-            var summaries = new[]
-            {
-                "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-            };
-
             
 
             app.Run();
