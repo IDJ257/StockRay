@@ -23,11 +23,43 @@ namespace StockRay.Models
 
         public int Id { get; init; }
 
-        public string Email { get; private set; }
 
-        public string UserName { get; private set; }
+        private string _email;
+
+        public string Email
+        {
+            get { return _email; }
+            private set
+            {
+                if (IsEmailValid(value))
+                {
+                    _email = value;
+                }
+            }
+        }
+
+
+        private string _userName;
+
+        public string UserName
+        {
+            get { return _userName; }
+            private set
+            {
+                //nqq da e tru false
+                if (IsNameValid(value))
+                {
+                    _userName = value;
+                }
+
+
+
+            }
+        }
+
 
         public string Password { get; private set; }
+     
 
 
         private readonly HashSet<Subscription> _subscriptions;
@@ -51,6 +83,12 @@ namespace StockRay.Models
         }
 
 
+       
+
+
+
+
+
 
 
         //Pri persistance-a shte hvashtame problemi koito sa svurzani s persistance problemi
@@ -71,7 +109,7 @@ namespace StockRay.Models
         //tuk shte doide heshiranata parola
         public void ChangePassword(string password)
         {
-            this.Password = Password;
+            this.Password = password;
         }
 
         public bool TryAddSymbolToWatch(Symbol symbol)
@@ -128,6 +166,34 @@ namespace StockRay.Models
             {
                 return false;
             }
+        }
+
+
+
+        //eventualno drug return tip
+        private static bool IsNameValid(string nameToBeTested)
+        {
+
+            //poneje e edno i sushto i za trite moje da se izkara na 1 
+            if (string.IsNullOrWhiteSpace(nameToBeTested)) throw new FormatException("Name is empty");
+
+            if (nameToBeTested.Any(x => !char.IsLetter(x))) throw new FormatException("Name contains something that is not a letter");
+
+            return true;
+        }
+
+        private static bool IsEmailValid(string emailToBeTested)
+        {
+            if (string.IsNullOrWhiteSpace(emailToBeTested)) throw new FormatException("Name is empty");
+
+            if (!emailToBeTested.Contains('@')) throw new FormatException("Invalid email");
+
+            //tehcnicheski e bezmiselno ama fun
+            if (emailToBeTested.Split('@')[0].Any(x => !char.IsLetter(x))) throw new FormatException("Invalid email chars");
+
+
+
+            return true;
         }
 
     }

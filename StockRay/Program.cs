@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using StockRay.Database;
+using StockRay.Services.Register;
 
 namespace StockRay
 {
@@ -25,6 +26,9 @@ namespace StockRay
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
+            //eventualen interface zaradi testing
+            builder.Services.AddScoped<RegisterService>();
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
