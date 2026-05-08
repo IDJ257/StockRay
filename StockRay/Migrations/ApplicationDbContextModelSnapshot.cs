@@ -56,7 +56,7 @@ namespace StockRay.Migrations
                     b.HasIndex("SymbolId", "SnapDate")
                         .IsUnique();
 
-                    b.ToTable("Snapshots");
+                    b.ToTable("Snapshots", (string)null);
                 });
 
             modelBuilder.Entity("StockRay.Models.Subscription", b =>
@@ -83,7 +83,7 @@ namespace StockRay.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Subscriptions");
+                    b.ToTable("Subscriptions", (string)null);
                 });
 
             modelBuilder.Entity("StockRay.Models.Symbol", b =>
@@ -100,7 +100,7 @@ namespace StockRay.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Symbols");
+                    b.ToTable("Symbols", (string)null);
                 });
 
             modelBuilder.Entity("StockRay.Models.User", b =>
@@ -128,7 +128,7 @@ namespace StockRay.Migrations
                     b.HasIndex("Email", "UserName")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("SymbolUser", b =>
@@ -143,7 +143,7 @@ namespace StockRay.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("SymbolUser");
+                    b.ToTable("SymbolUser", (string)null);
                 });
 
             modelBuilder.Entity("StockRay.Models.Snapshot", b =>

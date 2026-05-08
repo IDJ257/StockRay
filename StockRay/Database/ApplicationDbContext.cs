@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StockRay.Models;
+using StockRay.Other;
 
 namespace StockRay.Database
 {
@@ -52,14 +53,37 @@ namespace StockRay.Database
             modelBuilder.Entity<Snapshot>()
                 .HasIndex(sn => new {sn.SymbolId, sn.SnapDate})
                 .IsUnique();
-             
 
 
+
+            
                 
             
                 
             
           
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+
+
+            optionsBuilder.UseSeeding((context, _) =>
+            {
+
+                var sym = context.Set<Symbol>().Any();
+
+                if(!sym)
+                {
+
+                    var seed = SymbolSeed.Seed();
+
+                    context.Set<Symbol>().AddRange(seed);
+                    
+                    context.SaveChanges();
+                }
+               
+            });
         }
     }
 }

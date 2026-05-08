@@ -1,6 +1,8 @@
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StockRay.Database;
+using StockRay.Models;
 using StockRay.Services.Login;
 using StockRay.Services.Register;
 
@@ -28,9 +30,16 @@ namespace StockRay
             builder.Services.AddOpenApi();
 
             //eventualen interface zaradi testing
+           
             builder.Services.AddScoped<RegisterService>();
             builder.Services.AddScoped<LoginService>();
-            
+
+            //da se proveri dali moga da injectvam singleton v scoped i vice versa.
+            builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+
+            //singleton service koito da loadne vsichki simboli
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
