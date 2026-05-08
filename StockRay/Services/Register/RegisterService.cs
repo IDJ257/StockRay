@@ -34,6 +34,7 @@ namespace StockRay.Services.Register
 
                 var user = new User(name, hashedPass, email);
 
+                _context.Users.Add(user);
 
                 await _context.SaveChangesAsync();
 

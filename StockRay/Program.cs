@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using StockRay.Database;
+using StockRay.Services.Login;
 using StockRay.Services.Register;
 
 namespace StockRay
@@ -28,6 +29,7 @@ namespace StockRay
 
             //eventualen interface zaradi testing
             builder.Services.AddScoped<RegisterService>();
+            builder.Services.AddScoped<LoginService>();
             
             var app = builder.Build();
 

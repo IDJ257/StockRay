@@ -1,4 +1,5 @@
 ﻿
+using StockRay.Services.Login;
 using StockRay.Services.Register;
 namespace StockRay
 {
@@ -15,6 +16,8 @@ namespace StockRay
             var group = app.MapGroup("api/auth");
 
             group.MapPost("register", Register);
+
+            group.MapPost("login", Login);
 
 
 
@@ -35,6 +38,20 @@ namespace StockRay
             return res.HasPassed ? Results.Ok() : Results.BadRequest(res);
 
 
+        }
+
+
+        public static async Task<IResult> Login(
+            LoginService loginService,
+            LoginDto loginDto
+
+            )
+        {
+
+            var res = await loginService.LoginAsync(loginDto.UserName, loginDto.Password);
+
+
+            return res.HasPassed ? Results.Ok() : Results.BadRequest(res);
         }
 
     }
