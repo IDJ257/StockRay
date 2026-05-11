@@ -1,12 +1,35 @@
-﻿namespace StockRay.Models
+﻿using System.Diagnostics.Contracts;
+
+namespace StockRay.Models
 {
     public class Symbol
     {
+
+
         public int Id { get; init; }
 
 
         //UNIQUENESS ama 
         public string Name { get; init; }
+
+
+        public bool IsTopNine { get; private set; }
+
+
+        
+
+        public float Open { get; private set; }
+        
+
+        public float High { get; private set; }
+
+        public float Low { get; private set; }
+
+        public float Close { get; private set; }    
+
+
+       
+
 
         //bez back field tova e samo za relationshipa.
         //Nqma da ima sluchai v koito da polzvamwe Symbols.Users.AddUser()
@@ -31,9 +54,58 @@
         public Symbol(string name)
         {
             Name = name;
+            Open = 0f;
+            High = 0f;
+            Low = 0f;
+            Close = 0f;
             _snapShots = new List<Snapshot>();
         }
 
+
+        public void SetOpen(float open)
+        {
+            if (CheckForNormalFloat(open))
+            {
+                Open = open;
+            }
+        }
+
+        public void SetHigh(float high)
+        {
+            if (CheckForNormalFloat(high))
+            {
+                High = high;
+            }
+        }
+
+
+        public void SetLow(float low)
+        {
+            if (CheckForNormalFloat(low))
+            {
+                Low = low;
+            }
+        }
+
+        public void SetClose(float close)
+        {
+            if (CheckForNormalFloat(close))
+            {
+                Close = close;
+            }
+        }
+
+
+
+        public void SetTopNine()
+        {
+            IsTopNine = true;
+        }
+
+        public void DeSetTopNine()
+        {
+            IsTopNine = false;
+        }
 
         public void AddSnapshot(Snapshot snapshot)
         {
@@ -59,6 +131,12 @@
             return this.Id.GetHashCode();
         }
 
+
+        //Moje da se ostavi STATIC
+        private static bool CheckForNormalFloat(float value)
+        {
+            return float.IsNormal(value);
+        }
 
 
     }
