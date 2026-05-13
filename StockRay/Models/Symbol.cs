@@ -1,12 +1,44 @@
-﻿namespace StockRay.Models
+﻿using System.Diagnostics.Contracts;
+
+namespace StockRay.Models
 {
     public class Symbol
     {
+
+        //MOJE INDEXI VURHU ISTOP9 ILI NESHTO PODOBNO
+        //AKO CACHELISTA E BEZMISLEN
+        //I SE NALOJI DA SE PRAVQT PROSTO POSTQNNI GET ZAQVKI
+        //I TOGAVA ZA PUBLIC DASHBOARDA SHTE GO PRAVIM S WHERE
+        //ZA LICHNIQ PAK S WHERE ID
+        //DOKATO SEGA AKO CACHE LISTA E PRAZEN PROSTO SHTE VKARVAM VSICHKO
+
+
         public int Id { get; init; }
 
 
         //UNIQUENESS ama 
         public string Name { get; init; }
+
+
+        public bool IsTopNine { get; private set; }
+
+
+
+
+        public float Open { get; private set; }
+
+
+        public float High { get; private set; }
+
+        public float Low { get; private set; }
+
+        public float Close { get; private set; }
+
+        public float CurrentPrice { get; private set; }
+
+
+
+
 
         //bez back field tova e samo za relationshipa.
         //Nqma da ima sluchai v koito da polzvamwe Symbols.Users.AddUser()
@@ -31,9 +63,80 @@
         public Symbol(string name)
         {
             Name = name;
+            Open = 0f;
+            High = 0f;
+            Low = 0f;
+            Close = 0f;
+            CurrentPrice = 0f;
             _snapShots = new List<Snapshot>();
         }
 
+
+        public Symbol SetOpen(float open)
+        {
+
+            //vrushtat SYMBOL za da moga da CHAINNA v INITALSTATE
+            if (CheckForNormalFloat(open))
+            {
+                Open = open;
+            }
+
+            return this;
+        }
+
+        public Symbol SetHigh(float high)
+        {
+            if (CheckForNormalFloat(high))
+            {
+                High = high;
+            }
+
+
+            return this;
+        }
+
+
+        public Symbol SetLow(float low)
+        {
+            if (CheckForNormalFloat(low))
+            {
+                Low = low;
+            }
+
+            return this;
+        }
+
+        public Symbol SetCurrentPrice(float currentPrice)
+        {
+            if (CheckForNormalFloat(currentPrice))
+            {
+                CurrentPrice = currentPrice;
+            }
+
+            return this;
+        }
+
+        public void SetClose(float close)
+        {
+            if (CheckForNormalFloat(close))
+            {
+                Close = close;
+            }
+
+
+        }
+
+
+
+        public void SetTopNine()
+        {
+            IsTopNine = true;
+        }
+
+        public void DeSetTopNine()
+        {
+            IsTopNine = false;
+        }
 
         public void AddSnapshot(Snapshot snapshot)
         {
@@ -59,6 +162,14 @@
             return this.Id.GetHashCode();
         }
 
+
+        //Moje da se ostavi STATIC
+        private static bool CheckForNormalFloat(float value)
+        {
+
+            ArgumentOutOfRangeException.ThrowIfNegative(value, "AZ BQH OT SYMBOL.CS");
+            return true;
+        }
 
 
     }

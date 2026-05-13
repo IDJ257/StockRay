@@ -83,12 +83,6 @@ namespace StockRay.Models
         }
 
 
-       
-
-
-
-
-
 
 
         //Pri persistance-a shte hvashtame problemi koito sa svurzani s persistance problemi

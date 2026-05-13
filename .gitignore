@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /StockRay/TextFile.txt
 /StockRay/Other/SymbolSeed.cs
+/StockRay/StockRay.http
