@@ -2,8 +2,7 @@
 {
 
 
-    public static partial class Endpoints
-    {
+    
         public class RegisterDto
         {
             public string Name { get; set; }
@@ -18,7 +17,7 @@
                 Password = password;
                 Email = email;
             }
-        }
+        
 
     }
 

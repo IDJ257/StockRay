@@ -5,6 +5,13 @@ namespace StockRay.Models
     public class Symbol
     {
 
+        //MOJE INDEXI VURHU ISTOP9 ILI NESHTO PODOBNO
+        //AKO CACHELISTA E BEZMISLEN
+        //I SE NALOJI DA SE PRAVQT PROSTO POSTQNNI GET ZAQVKI
+        //I TOGAVA ZA PUBLIC DASHBOARDA SHTE GO PRAVIM S WHERE
+        //ZA LICHNIQ PAK S WHERE ID
+        //DOKATO SEGA AKO CACHE LISTA E PRAZEN PROSTO SHTE VKARVAM VSICHKO
+
 
         public int Id { get; init; }
 
@@ -16,19 +23,21 @@ namespace StockRay.Models
         public bool IsTopNine { get; private set; }
 
 
-        
+
 
         public float Open { get; private set; }
-        
+
 
         public float High { get; private set; }
 
         public float Low { get; private set; }
 
-        public float Close { get; private set; }    
+        public float Close { get; private set; }
+
+        public float CurrentPrice { get; private set; }
 
 
-       
+
 
 
         //bez back field tova e samo za relationshipa.
@@ -58,33 +67,53 @@ namespace StockRay.Models
             High = 0f;
             Low = 0f;
             Close = 0f;
+            CurrentPrice = 0f;
             _snapShots = new List<Snapshot>();
         }
 
 
-        public void SetOpen(float open)
+        public Symbol SetOpen(float open)
         {
+
+            //vrushtat SYMBOL za da moga da CHAINNA v INITALSTATE
             if (CheckForNormalFloat(open))
             {
                 Open = open;
             }
+
+            return this;
         }
 
-        public void SetHigh(float high)
+        public Symbol SetHigh(float high)
         {
             if (CheckForNormalFloat(high))
             {
                 High = high;
             }
+
+
+            return this;
         }
 
 
-        public void SetLow(float low)
+        public Symbol SetLow(float low)
         {
             if (CheckForNormalFloat(low))
             {
                 Low = low;
             }
+
+            return this;
+        }
+
+        public Symbol SetCurrentPrice(float currentPrice)
+        {
+            if (CheckForNormalFloat(currentPrice))
+            {
+                CurrentPrice = currentPrice;
+            }
+
+            return this;
         }
 
         public void SetClose(float close)
@@ -93,6 +122,8 @@ namespace StockRay.Models
             {
                 Close = close;
             }
+
+
         }
 
 
@@ -135,7 +166,9 @@ namespace StockRay.Models
         //Moje da se ostavi STATIC
         private static bool CheckForNormalFloat(float value)
         {
-            return float.IsNormal(value);
+
+            ArgumentOutOfRangeException.ThrowIfNegative(value, "AZ BQH OT SYMBOL.CS");
+            return true;
         }
 
 
