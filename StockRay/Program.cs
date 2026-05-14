@@ -108,6 +108,7 @@ namespace StockRay
             builder.Services.AddScoped<RegisterService>();
             builder.Services.AddScoped<LoginService>();
             builder.Services.AddScoped<PublicDashboardService>();
+            builder.Services.AddScoped<AddSymbolService>();
 
 
             //da se proveri dali moga da injectvam singleton v scoped i vice versa.

@@ -1,7 +1,10 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 
 namespace StockRay.Models
 {
+   
+
     public class Symbol
     {
 
@@ -59,6 +62,11 @@ namespace StockRay.Models
 
         }
 
+        //SAMO ZA ATTACH
+        public Symbol(int id)
+        {
+            Id = id;
+        }
 
         public Symbol(string name)
         {
@@ -170,7 +178,6 @@ namespace StockRay.Models
             ArgumentOutOfRangeException.ThrowIfNegative(value, "AZ BQH OT SYMBOL.CS");
             return true;
         }
-
 
     }
 

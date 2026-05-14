@@ -47,6 +47,7 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
 
             await _context.SaveChangesAsync();
 
+
             _fastAccess.Swap(SetUpImmutableList(symbols));
 
 
