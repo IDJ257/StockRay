@@ -35,6 +35,8 @@ namespace StockRay.Endpoints
             app.MapPost("/RemoveSymbol/{id}", RemoveSymbol);
 
 
+            app.MapGet("/GetSymbols/{id}", GetSymbols);
+
 
 
 
@@ -42,16 +44,30 @@ namespace StockRay.Endpoints
 
         }
 
+        public static async Task<IResult> GetSymbols(
+          [FromRoute] int id,
+          GetSymbolService getSymbolService
+
+
+          )
+        {
+
+            var res = await getSymbolService.GetSymbolsAsync(id);
+
+            return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest(res);
+
+        }
+
 
         public static async Task<IResult> RemoveSymbol(
             [FromRoute] int id,
             RemoveSymbolService removeSymbolService,
-            UserSymbolInboundDto symbolInbound
-            
+            UserSymbolInboundDto userSymbolInbound
+
             )
         {
 
-            var res = await removeSymbolService.RemoveSymbolAsync(id, symbolInbound);
+            var res = await removeSymbolService.RemoveSymbolAsync(id, userSymbolInbound);
 
             return res.HasPassed ? Results.Ok() : Results.BadRequest(res);
 

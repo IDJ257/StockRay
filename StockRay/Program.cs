@@ -17,6 +17,7 @@ using StockRay.Services.Register;
 using System.Linq.Expressions;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
+using static StockRay.Endpoints.Endpoints;
 
 namespace StockRay
 {
@@ -109,6 +110,8 @@ namespace StockRay
             builder.Services.AddScoped<LoginService>();
             builder.Services.AddScoped<PublicDashboardService>();
             builder.Services.AddScoped<AddSymbolService>();
+            builder.Services.AddScoped<RemoveSymbolService>();
+            builder.Services.AddScoped<GetSymbolService>();
 
 
             //da se proveri dali moga da injectvam singleton v scoped i vice versa.
