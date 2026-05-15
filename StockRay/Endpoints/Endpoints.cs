@@ -10,6 +10,7 @@ using StockRay.Services.PublicDashboard;
 using StockRay.Services.Register;
 using StockRay.Services.RemoveSymbol;
 using StockRay.Shared;
+using StockRay.SignalHub;
 namespace StockRay.Endpoints
 {
 
@@ -56,12 +57,9 @@ namespace StockRay.Endpoints
           [FromRoute] int id,
           GetSymbolService getSymbolService
 
-
           )
         {
-
             var res = await getSymbolService.GetSymbolsAsync(id);
-
             return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest(res);
 
         }

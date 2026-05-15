@@ -22,6 +22,7 @@ using StockRay.Services.RemoveSymbol;
 using StockRay.SignalHub;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using StockRay.Other;
 
 
 namespace StockRay
@@ -66,7 +67,7 @@ namespace StockRay
 
                 });
 
-            builder.Services.AddSignalR();
+            builder.Services.AddSignalR(options => options.EnableDetailedErrors = true);
             builder.Services.AddQuartz(options =>
             {
 
@@ -119,7 +120,7 @@ namespace StockRay
 
             builder.Services.AddScoped<IOnStartUp, OnStartUp>();
             builder.Services.AddSingleton<IFastAccess, FastAccess>();
-            //builder.Services.AddSingleton<IActiveGroup, ActiveGroup>();
+            builder.Services.AddSingleton<IActiveGroup, ActiveGroup>();
             builder.Services.AddScoped<ISetDaily, SetDaily>();
             builder.Services.AddScoped<ISetTopNineWeekly, SetTopNineWeekly>();
             builder.Services.AddScoped<ISetSymbolState, SetSymbolState>();
@@ -130,6 +131,7 @@ namespace StockRay
             builder.Services.AddScoped<AddSymbolService>();
             builder.Services.AddScoped<RemoveSymbolService>();
             builder.Services.AddScoped<GetSymbolService>();
+
 
 
 

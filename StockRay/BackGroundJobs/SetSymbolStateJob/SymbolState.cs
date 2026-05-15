@@ -1,18 +1,21 @@
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 using StockRay.Database;
 using StockRay.Models;
+using StockRay.Other;
 using StockRay.Services.GetSymbol;
-using System.Collections.Immutable;
-using System.Net.NetworkInformation;
 using StockRay.Shared;
 using StockRay.SignalHub;
+using System.Collections.Immutable;
+using System.Net.NetworkInformation;
 
 namespace StockRay.BackGroundJobs.SetSymbolStateJob
 {
-    
 
+    //AKO HANGNE MOJE DA E OTTUK
+    //HANG!
 
 
     public interface ISetSymbolState
@@ -30,18 +33,22 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
 
         private readonly IHubContext<SymbolNotifHub, ISymbolNotifClient> _hubContext;
 
-    
+        private readonly IActiveGroup _activeGroup;
+
+
 
         public SetSymbolState(
-            ApplicationDbContext context, 
-            IFastAccess fastAccess, 
-            IHubContext<SymbolNotifHub, ISymbolNotifClient> hubContext
+            ApplicationDbContext context,
+            IFastAccess fastAccess,
+            IHubContext<SymbolNotifHub, ISymbolNotifClient> hubContext,
+            IActiveGroup activeGroup
            )
         {
             _context = context;
             _fastAccess = fastAccess;
             _hubContext = hubContext;
-            
+            _activeGroup = activeGroup;
+
         }
 
         public async Task UpdateSymbolStateAsync()
@@ -49,8 +56,8 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
             var symbols = await _context.Symbols
                 .AsSplitQuery()
                 .ToListAsync();
-            
-            
+
+
 
 
             if (symbols == null || symbols.Count == 0)
@@ -61,6 +68,7 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
             //Moje task
 
 
+
             UpdatePrices(symbols);
 
             await _context.SaveChangesAsync();
@@ -69,9 +77,9 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
 
             await SendToWebSocket();
 
-            
-            
-          
+
+
+
 
 
 
@@ -90,31 +98,36 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
 
         private async Task SendToWebSocket()
         {
-            
+
             //HANG?
             //Moje da ima hang zaradi sled awaita gore pri saveChanges se smenq threada
             //Ne sum siguren dali ima smisul ot tova sega da sa fire-forget ama 
             //nqma razlika v stiganeto po websocketa taka che moje 
-            List<Task> tasks = new List<Task>();
+            //List<Task> tasks = new List<Task>();
 
             var fastList = _fastAccess.GetSymbols();
 
-            var taskForPublicGroup = _hubContext.Clients.Group("Public").ReceivePublicUpdate(
+            await _hubContext.Clients.Group("Public").ReceivePublicUpdate(
                 fastList.Where(s => s.IsTopNine == true)
                 .Select(s => new OutboundStockPrice(s.Id, s.Open, s.High, s.Low, s.CurrentPrice)).ToList());
 
-            tasks.Add(taskForPublicGroup);
 
-            for (int i = 0; i < fastList.Count; i++)
+
+            foreach (var item in _activeGroup.ConnectionGroups)
             {
-                tasks.Add(_hubContext.Clients.Group(fastList[i].Name).ReceiveGroupUpdate(
-                    new OutboundStockPrice(fastList[i].Id, fastList[i].Open, fastList[i].High, fastList[i].Low, fastList[i].CurrentPrice))
-                    );
+                //fast list da mi dade za AAPL, MSFT, TSM
+
+              var outBoundListForClient = fastList
+                    .Where(s => item.Value.Contains(s.Name)) //NE BI TRQBVALO DA IMA READ HANG NA item.VALUE. VALUETO e OT CONCURRENTBAG TIP I READA BI TRQBVALO DA SE LOCKNE
+                    .Select(es => new OutboundStockPrice(es.Id, es.Open, es.High, es.Low, es.CurrentPrice))
+                    .ToList();
 
 
+                await _hubContext.Clients.Client(item.Key).ReceiveGroupUpdate(outBoundListForClient);
             }
 
-            await Task.WhenAll(tasks);
+            
+
 
         }
 
@@ -173,4 +186,5 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
             }
         }
     }
+
 }
