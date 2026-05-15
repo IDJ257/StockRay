@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
@@ -19,11 +20,12 @@ using StockRay.Services.PublicDashboard;
 using StockRay.Services.Register;
 using StockRay.Services.RemoveSymbol;
 using StockRay.SignalHub;
-using static StockRay.Endpoints.Endpoints;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 
 namespace StockRay
 {
-
 
 
     public class Program
@@ -48,8 +50,21 @@ namespace StockRay
             builder.Services.AddOpenApi();
             builder.Services.AddEndpointsApiExplorer();
 
+            builder.Services.AddAuthorization();
 
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(jwt =>
+                {
+                    jwt.RequireHttpsMetadata = false;
+                    jwt.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"])),
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                        ValidAudience = builder.Configuration["Jwt:Audience"],
+                        ClockSkew = TimeSpan.Zero
+                    };
 
+                });
 
             builder.Services.AddSignalR();
             builder.Services.AddQuartz(options =>
@@ -108,6 +123,7 @@ namespace StockRay
             builder.Services.AddScoped<ISetDaily, SetDaily>();
             builder.Services.AddScoped<ISetTopNineWeekly, SetTopNineWeekly>();
             builder.Services.AddScoped<ISetSymbolState, SetSymbolState>();
+            builder.Services.AddSingleton<TokenProvider>();
             builder.Services.AddScoped<RegisterService>();
             builder.Services.AddScoped<LoginService>();
             builder.Services.AddScoped<PublicDashboardService>();
@@ -131,11 +147,14 @@ namespace StockRay
                 app.MapOpenApi();
             }
 
+            app.UseAuthentication();
+
+            app.UseAuthorization();
             app.UseHttpsRedirection();
 
             app.MapEndpoints();
 
-            app.UseAuthorization();
+           
 
             app.MapHub<SymbolNotifHub>("/sym-notif");
 

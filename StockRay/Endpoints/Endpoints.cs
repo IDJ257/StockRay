@@ -36,12 +36,12 @@ namespace StockRay.Endpoints
             app.MapPost("/login", Login);
 
             //id = userId
-            app.MapPost("/AddSymbol/{id}", AddSymbol);
+            app.MapPost("/AddSymbol/{id}", AddSymbol).RequireAuthorization();
 
-            app.MapPost("/RemoveSymbol/{id}", RemoveSymbol);
+            app.MapPost("/RemoveSymbol/{id}", RemoveSymbol).RequireAuthorization();
 
 
-            app.MapGet("/GetSymbols/{id}", GetSymbols);
+            app.MapGet("/GetSymbols/{id}", GetSymbols).RequireAuthorization();
 
 
 
@@ -122,7 +122,7 @@ namespace StockRay.Endpoints
             var res = await loginService.LoginAsync(loginDto.UserName, loginDto.Password);
 
 
-            return res.HasPassed ? Results.Ok() : Results.BadRequest(res);
+            return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest(res);
         }
 
         public static IResult GetPublicDashboard(

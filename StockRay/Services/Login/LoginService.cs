@@ -13,8 +13,18 @@ namespace StockRay.Services.Login
 
         private readonly ApplicationDbContext _context;
 
+        private readonly TokenProvider _tokenProvider;
+
+
+        public LoginService(IPasswordHasher<User> hasher, ApplicationDbContext context, TokenProvider tokenProvider)
+        {
+            _hasher = hasher;
+            _context = context;
+            _tokenProvider = tokenProvider;
+        }
+
         //tova e butaforno realno shoto nakraq shte slagam AUTH/AUTHR 
-        public async Task<ServiceResult> LoginAsync(string userName, string password)
+        public async Task<ServiceResult<string>> LoginAsync(string userName, string password)
         {
             try
             {
@@ -22,7 +32,7 @@ namespace StockRay.Services.Login
 
                 if (user == null)
                 {
-                    return new ServiceResult(true);
+                    return new ServiceResult<string>(true);
 
                 }
 
@@ -36,16 +46,17 @@ namespace StockRay.Services.Login
                     throw new ArgumentException("Passwords don't match");
                 }
 
+                string token = _tokenProvider.Create(user);
 
 
-                return new ServiceResult(true);
+                return new ServiceResult<string>(true, token);
 
 
             }
             catch (Exception ex)
             {
 
-                return new ServiceResult(false, ex.Message);
+                return new ServiceResult<string>(false, ex.Message);
             }
         }
 
