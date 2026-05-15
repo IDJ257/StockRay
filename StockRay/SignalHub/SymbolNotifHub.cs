@@ -16,7 +16,7 @@ namespace StockRay.SignalHub
 
     }
 
-    [Authorize]
+    //[Authorize]
     public class SymbolNotifHub : Hub<ISymbolNotifClient>
     {
         private readonly IActiveGroup   _activeGroup;

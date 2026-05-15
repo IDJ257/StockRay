@@ -154,6 +154,8 @@ namespace StockRay
             app.UseAuthorization();
             app.UseHttpsRedirection();
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.MapEndpoints();
 
            
