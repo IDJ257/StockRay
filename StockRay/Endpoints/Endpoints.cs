@@ -1,16 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using StockRay.BackGroundJobs;
 using StockRay.Models;
+using StockRay.Services.AddSymbol;
+using StockRay.Services.GetSymbol;
 using StockRay.Services.Login;
 using StockRay.Services.PublicDashboard;
 using StockRay.Services.Register;
+using StockRay.Services.RemoveSymbol;
+using StockRay.Shared;
 namespace StockRay.Endpoints
 {
 
     //Authentication no za sega bez authentication samo password
     //check against db
 
-    public static partial class Endpoints
+    public static class Endpoints
     {
 
         public static void MapEndpoints(this IEndpointRouteBuilder app)
@@ -43,6 +49,8 @@ namespace StockRay.Endpoints
 
 
         }
+
+
 
         public static async Task<IResult> GetSymbols(
           [FromRoute] int id,
@@ -83,7 +91,7 @@ namespace StockRay.Endpoints
 
             var res = await addSymbolService.AddSymbolAsync(userSymbolInbound, id);
 
-            return res.HasPassed ? Results.Ok() : Results.BadRequest(res);
+            return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest();
 
         }
 

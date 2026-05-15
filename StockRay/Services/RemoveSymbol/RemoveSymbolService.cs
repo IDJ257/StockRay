@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StockRay.Database;
 using StockRay.Other;
-namespace StockRay.Endpoints
+using StockRay.Shared;
+namespace StockRay.Services.RemoveSymbol
 {
 
 
-    public static partial class Endpoints
-    {
+    
+    
         public class RemoveSymbolService
         {
 
@@ -64,17 +65,6 @@ namespace StockRay.Endpoints
 
 
         }
-
-    }
-
-
-
-
-
-
-
-
-
 
 
 }

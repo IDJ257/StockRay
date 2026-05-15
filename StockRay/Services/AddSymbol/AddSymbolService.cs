@@ -2,7 +2,8 @@
 using StockRay.Database;
 using StockRay.Models;
 using StockRay.Other;
-namespace StockRay.Endpoints
+using StockRay.Shared;
+namespace StockRay.Services.AddSymbol
 {
 
 
@@ -18,7 +19,7 @@ namespace StockRay.Endpoints
 
 
         //Eventualno da se vrushta List<OutboundDto> za da moje vednaga da se pokajat promenite
-        public async Task<ServiceResult> AddSymbolAsync(UserSymbolInboundDto inboundDto, int userId)
+        public async Task<ServiceResult<List<UserSymbolsOutboundDto>>> AddSymbolAsync(UserSymbolInboundDto inboundDto, int userId)
         {
             var user = await _context.Users
                 .Include(u => u.Symbols)
@@ -29,6 +30,8 @@ namespace StockRay.Endpoints
             //prosto shte dobavqme simvoli kum useri chrez tehnite ID-ta.
             var symbols = await _context.Symbols.Where(s => inboundDto.SymbolIds.Contains(s.Id)).ToListAsync();
 
+         
+
 
 
             if (inboundDto.SymbolIds.Count == 1)
@@ -37,13 +40,13 @@ namespace StockRay.Endpoints
 
                 if (!user.TryAddSymbolToWatch(symbols[0]))
                 {
-                    return new ServiceResult(false);
+                    return new ServiceResult<List<UserSymbolsOutboundDto>>(false);
                 }
 
 
                 await _context.SaveChangesAsync();
 
-                return new ServiceResult<List<UserSymbolsOutboundDto>>(false, symbols
+                return new ServiceResult<List<UserSymbolsOutboundDto>>(true, symbols
                         .Select(s => new UserSymbolsOutboundDto(s.Id, s.Name, s.Open, s.High, s.Low, s.CurrentPrice)).ToList());
 
             }
@@ -54,7 +57,7 @@ namespace StockRay.Endpoints
 
                     if (!user.TryAddSymbolToWatch(symbols[i]))
                     {
-                        return new ServiceResult(false);
+                        return new ServiceResult<List<UserSymbolsOutboundDto>>(false);
                     }
 
 
@@ -64,7 +67,7 @@ namespace StockRay.Endpoints
 
                 await _context.SaveChangesAsync();
 
-                return new ServiceResult<List<UserSymbolsOutboundDto>>(false, symbols
+                return new ServiceResult<List<UserSymbolsOutboundDto>>(true, symbols
                         .Select(s => new UserSymbolsOutboundDto(s.Id, s.Name, s.Open, s.High, s.Low, s.CurrentPrice)).ToList());
             }
 
