@@ -1,6 +1,15 @@
-﻿using StockRay.Services.Login;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using StockRay.BackGroundJobs;
+using StockRay.Models;
+using StockRay.Services.AddSymbol;
+using StockRay.Services.GetSymbol;
+using StockRay.Services.Login;
 using StockRay.Services.PublicDashboard;
 using StockRay.Services.Register;
+using StockRay.Services.RemoveSymbol;
+using StockRay.Shared;
 namespace StockRay.Endpoints
 {
 
@@ -22,7 +31,17 @@ namespace StockRay.Endpoints
             app.MapGet("/public", GetPublicDashboard);
 
 
+            app.MapPost("/register", Register);
 
+            app.MapPost("/login", Login);
+
+            //id = userId
+            app.MapPost("/AddSymbol/{id}", AddSymbol);
+
+            app.MapPost("/RemoveSymbol/{id}", RemoveSymbol);
+
+
+            app.MapGet("/GetSymbols/{id}", GetSymbols);
 
 
 
@@ -30,6 +49,53 @@ namespace StockRay.Endpoints
 
 
         }
+
+
+
+        public static async Task<IResult> GetSymbols(
+          [FromRoute] int id,
+          GetSymbolService getSymbolService
+
+
+          )
+        {
+
+            var res = await getSymbolService.GetSymbolsAsync(id);
+
+            return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest(res);
+
+        }
+
+
+        public static async Task<IResult> RemoveSymbol(
+            [FromRoute] int id,
+            RemoveSymbolService removeSymbolService,
+            UserSymbolInboundDto userSymbolInbound
+
+            )
+        {
+
+            var res = await removeSymbolService.RemoveSymbolAsync(id, userSymbolInbound);
+
+            return res.HasPassed ? Results.Ok() : Results.BadRequest(res);
+
+        }
+
+
+        public static async Task<IResult> AddSymbol(
+            [FromRoute] int id,
+            AddSymbolService addSymbolService,
+            UserSymbolInboundDto userSymbolInbound
+            )
+        {
+
+            var res = await addSymbolService.AddSymbolAsync(userSymbolInbound, id);
+
+            return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest();
+
+        }
+
+
 
         public static async Task<IResult> Register(
             RegisterService registerService,

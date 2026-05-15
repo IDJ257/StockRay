@@ -18,7 +18,7 @@ namespace StockRay.Models
         //EFCORE
         public User()
         {
-
+            _symbols = new HashSet<Symbol>(MAX_STOCKSYMBOLS);
         }
 
         public int Id { get; init; }
@@ -110,6 +110,7 @@ namespace StockRay.Models
         {
             //Symvola e random reference no bi trqbvalo
             //tuk da se sledi po ID equals
+
             if (_symbols.Add(symbol))
             {
                 return true;

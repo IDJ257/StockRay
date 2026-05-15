@@ -24,6 +24,7 @@ namespace StockRay.Database
             modelBuilder.Entity<User>()
                 .HasKey(u => u.Id);
 
+
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Symbols)
                 .WithMany(s => s.Users);
