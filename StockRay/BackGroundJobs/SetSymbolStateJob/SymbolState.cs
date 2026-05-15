@@ -1,11 +1,18 @@
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 using StockRay.Database;
 using StockRay.Models;
+using StockRay.Services.GetSymbol;
 using System.Collections.Immutable;
+using System.Net.NetworkInformation;
+using StockRay.Shared;
+using StockRay.SignalHub;
 
 namespace StockRay.BackGroundJobs.SetSymbolStateJob
 {
+    
+
 
 
     public interface ISetSymbolState
@@ -13,22 +20,37 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
         Task UpdateSymbolStateAsync();
     }
 
+
+    //REFACTOR!!
     public class SetSymbolState : ISetSymbolState
     {
         private readonly ApplicationDbContext _context;
 
         private readonly IFastAccess _fastAccess;
 
+        private readonly IHubContext<SymbolNotifHub, ISymbolNotifClient> _hubContext;
+
+    
+
         public SetSymbolState(
-            ApplicationDbContext context, IFastAccess fastAccess)
+            ApplicationDbContext context, 
+            IFastAccess fastAccess, 
+            IHubContext<SymbolNotifHub, ISymbolNotifClient> hubContext
+           )
         {
             _context = context;
             _fastAccess = fastAccess;
+            _hubContext = hubContext;
+            
         }
 
         public async Task UpdateSymbolStateAsync()
         {
-            var symbols = await _context.Symbols.ToListAsync();
+            var symbols = await _context.Symbols
+                .AsSplitQuery()
+                .ToListAsync();
+            
+            
 
 
             if (symbols == null || symbols.Count == 0)
@@ -41,14 +63,16 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
 
             UpdatePrices(symbols);
 
-
-
-
-
             await _context.SaveChangesAsync();
 
-
             _fastAccess.Swap(SetUpImmutableList(symbols));
+
+            await SendToWebSocket();
+
+            
+            
+          
+
 
 
         }
@@ -63,6 +87,37 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
 
 
         }
+
+        private async Task SendToWebSocket()
+        {
+            
+            //HANG?
+            //Moje da ima hang zaradi sled awaita gore pri saveChanges se smenq threada
+            //Ne sum siguren dali ima smisul ot tova sega da sa fire-forget ama 
+            //nqma razlika v stiganeto po websocketa taka che moje 
+            List<Task> tasks = new List<Task>();
+
+            var fastList = _fastAccess.GetSymbols();
+
+            var taskForPublicGroup = _hubContext.Clients.Group("Public").ReceivePublicUpdate(
+                fastList.Where(s => s.IsTopNine == true)
+                .Select(s => new OutboundStockPrice(s.Id, s.Open, s.High, s.Low, s.CurrentPrice)).ToList());
+
+            tasks.Add(taskForPublicGroup);
+
+            for (int i = 0; i < fastList.Count; i++)
+            {
+                tasks.Add(_hubContext.Clients.Group(fastList[i].Name).ReceiveGroupUpdate(
+                    new OutboundStockPrice(fastList[i].Id, fastList[i].Open, fastList[i].High, fastList[i].Low, fastList[i].CurrentPrice))
+                    );
+
+
+            }
+
+            await Task.WhenAll(tasks);
+
+        }
+
 
         private void UpdatePrices(List<Symbol> symbols)
         {
@@ -84,15 +139,6 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
 
                         var newDecreasedPrice = symbol.CurrentPrice - randomValue;
 
-                        if(newDecreasedPrice < 0)
-                        {
-
-                        }
-
-                        if(randomValue < 0)
-                        {
-
-                        }
 
                         if (newDecreasedPrice < symbol.Low)
                         {

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Quartz;
 using Quartz.Core;
 using RabbitMQ.Client.Logging;
+using StockRay.BackGroundJobs;
 using StockRay.BackGroundJobs.OnStartUpJob;
 using StockRay.BackGroundJobs.SetDailyJob;
 using StockRay.BackGroundJobs.SetSymbolStateJob;
@@ -11,18 +12,17 @@ using StockRay.BackGroundJobs.SetTopNineWeeklyJob;
 using StockRay.Database;
 using StockRay.Endpoints;
 using StockRay.Models;
+using StockRay.Services.AddSymbol;
+using StockRay.Services.GetSymbol;
 using StockRay.Services.Login;
 using StockRay.Services.PublicDashboard;
 using StockRay.Services.Register;
-using System.Linq.Expressions;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading.Tasks;
+using StockRay.Services.RemoveSymbol;
+using StockRay.SignalHub;
 using static StockRay.Endpoints.Endpoints;
 
 namespace StockRay
 {
-
-   
 
 
 
@@ -47,10 +47,11 @@ namespace StockRay
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services.AddEndpointsApiExplorer();
-            
-        
 
 
+
+
+            builder.Services.AddSignalR();
             builder.Services.AddQuartz(options =>
             {
 
@@ -103,6 +104,7 @@ namespace StockRay
 
             builder.Services.AddScoped<IOnStartUp, OnStartUp>();
             builder.Services.AddSingleton<IFastAccess, FastAccess>();
+            //builder.Services.AddSingleton<IActiveGroup, ActiveGroup>();
             builder.Services.AddScoped<ISetDaily, SetDaily>();
             builder.Services.AddScoped<ISetTopNineWeekly, SetTopNineWeekly>();
             builder.Services.AddScoped<ISetSymbolState, SetSymbolState>();
@@ -112,6 +114,7 @@ namespace StockRay
             builder.Services.AddScoped<AddSymbolService>();
             builder.Services.AddScoped<RemoveSymbolService>();
             builder.Services.AddScoped<GetSymbolService>();
+
 
 
             //da se proveri dali moga da injectvam singleton v scoped i vice versa.
@@ -130,9 +133,11 @@ namespace StockRay
 
             app.UseHttpsRedirection();
 
-            app.MapEndpoints();            
+            app.MapEndpoints();
 
             app.UseAuthorization();
+
+            app.MapHub<SymbolNotifHub>("/sym-notif");
 
 
             app.Run();
