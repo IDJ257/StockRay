@@ -23,7 +23,7 @@ const normalizeSymbol = (raw) => ({
 const renderDashboard = () => {
     grid.innerHTML = "";
 
-    const items = symbols.slice(0, 9);
+    const items = symbols;
     while (items.length < 9) {
         items.push({
             id: `placeholder-${items.length}`,

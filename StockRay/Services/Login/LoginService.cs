@@ -28,7 +28,7 @@ namespace StockRay.Services.Login
         {
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName.Equals(userName));
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Email.Equals(userName));
 
                 if (user == null)
                 {

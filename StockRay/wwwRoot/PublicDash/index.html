@@ -4,17 +4,23 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>StockRay Public Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-
-
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+    <div class="menu-shell">
+        <div class="menu-edge" aria-hidden="true"></div>
+        <nav class="side-menu" aria-label="Main menu">
+            <a class="menu-link" href="/Register/">Register</a>
+            <a class="menu-link" href="/Login/">Login</a>
+            <a class="menu-link" href="/private-dashboard">PrivateDashboard</a>
+        </nav>
+    </div>
+
     <main class="page">
         <section id="dashboardGrid" class="grid" aria-live="polite"></section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@9.0.6/dist/browser/signalr.min.js"></script>
     <script src="app.js"></script>
-
 </body>
 </html>

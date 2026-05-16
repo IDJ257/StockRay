@@ -23,6 +23,7 @@ using StockRay.SignalHub;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using StockRay.Other;
+using Microsoft.AspNetCore.Rewrite;
 
 
 namespace StockRay
@@ -50,6 +51,7 @@ namespace StockRay
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services.AddEndpointsApiExplorer();
+            
 
             builder.Services.AddAuthorization();
 
@@ -153,9 +155,12 @@ namespace StockRay
 
             app.UseAuthorization();
             app.UseHttpsRedirection();
-
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseRouting();
+
+        
+
             app.MapEndpoints();
 
            
