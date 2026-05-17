@@ -10,6 +10,9 @@ const authMess = "You are not authorized to see the contents of the page Please 
 
 const root = document.getElementById("privateDash");
 
+const modal = document.getElementById("stocksModal");
+const stocksList = document.getElementById("stocksList");
+
 const formatNumber = (value) => {
     if (value === null || value === undefined || Number.isNaN(value)) {
         return "--";
@@ -17,14 +20,23 @@ const formatNumber = (value) => {
     return Number(value).toFixed(2);
 };
 
-const render = () => {
-    root.innerHTML = "";
+const openAllStocks = async () => {
 
-    symbolsById.forEach((symbol, id) => {
-        const card = document.createElement("div");
-        card.className = "bubble";
+ 
 
-        card.innerHTML = `
+}
+
+const addSymbol = async () => {
+
+}
+
+
+const createCard = (symbol) => {
+    const card = document.createElement("div");
+    card.className = "bubble";
+
+    card.innerHTML = `
+            <button class="bubble-close">X</button>
             <h3>${symbol.name}</h3>
             <div class="micro-grid">
                 <div class="current-price">${formatNumber(symbol.currentPrice)}</div>
@@ -34,11 +46,40 @@ const render = () => {
             </div>
         `;
 
+    return card;
+}
+
+const render = () => {
+    root.innerHTML = "";
+
+
+    const addBubble = document.createElement("div");
+    addBubble.className = "bubble bubble-add";
+    addBubble.dataset.action = "add-symbol";
+
+    const content = document.createElement("div");
+    content.className = "bubble-add-content";
+    content.textContent = "+";
+
+    addBubble.appendChild(content);
+
+    addBubble.addEventListener("click", () => {
+        openAllStocks();
+    
+    });
+
+    root.appendChild(addBubble);
+
+    symbolsById.forEach((symbol, id) => {
+
+        const card = createCard(symbol);
         cardsById.set(id, card);
         root.appendChild(card);
     });
 };
 
+
+//duplicate, shte se pravi
 const handleSignalUpdate = (updates) => {
 
 
@@ -83,14 +124,14 @@ const loadPrivateSymbols = async () => {
     })
 
 
-    
+
 
     if (!response.ok) {
 
         if (response.status === 401) {
 
 
-             const err = error(authMess, () => {
+            const err = error(authMess, () => {
                 root.innerHTML = "";
                 localStorage.removeItem("stockrayJWT");
                 window.location.href = "/PublicDash/";
@@ -103,7 +144,7 @@ const loadPrivateSymbols = async () => {
         //error("", () => {
         //    root.innerHTML = "";
         //})
-       
+
     }
 
     const data = await response.json();
@@ -127,11 +168,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     render();
 
-    await connection.start(handleSignalUpdate);
-
+      
     const groups = privateSymbols.map(s => s.name);
 
-    await connection.joinGroups(groups);
-    
+    await connection.joinGroups(groups, handleSignalUpdate);
+
 
 });

@@ -1,13 +1,29 @@
-﻿body {
+﻿
+#privateDash {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 65px;
+    max-width: 1400px; /* controls how wide the grid can grow */
+    margin: 0 auto; /* centers it horizontally */
+
+    padding: 40px 24px; /* creates the “inward start/end” spacing */
+    box-sizing: border-box;
+    align-content: start;
+}
+
+body {
     margin: 0;
     font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
     background: #123A63;
     color: #F2F5F8;
     min-height: 100vh;
-    display: flex;
+ /*   display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center;*/
 }
+
+
+
 
 
 .error-blimp {
@@ -61,3 +77,241 @@
         background: rgba(255, 255, 255, 0.25);
         transform: translateY(-2px);
     }
+
+/*Ujasen code duplication shte go opravqm prosto neka da raboti neshto*/
+
+.bubble-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    min-height: 180px; /* keep same size as your bubbles */
+    transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+    /* Hover effect to match your close button feel */
+    .bubble-add:hover {
+        background: rgba(255, 255, 255, 0.14);
+        border-color: rgba(255, 255, 255, 0.35);
+        transform: scale(1.02);
+    }
+
+/* Big plus sign */
+.bubble-add-content {
+    font-size: 64px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1;
+    user-select: none;
+    transition: transform 0.15s ease, color 0.2s ease;
+}
+
+/* Slight interaction feedback */
+.bubble-add:hover .bubble-add-content {
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+.bubble-add:active .bubble-add-content {
+    transform: scale(0.95);
+}
+
+.bubble {
+    width:240px;
+    position: relative;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 28px;
+    padding: 20px;
+    min-height: 180px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+    .bubble h3 {
+        margin: 0;
+        font-size: 18px;
+        letter-spacing: 0.4px;
+        text-align: center;
+    }
+
+/* Close button */
+.bubble-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+    .bubble-close:hover {
+        background: rgba(255, 255, 255, 0.16);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: #ffffff;
+        transform: scale(1.05);
+    }
+
+    .bubble-close:active {
+        transform: scale(0.96);
+    }
+
+
+.micro-grid {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    transform: translateY(15px);
+    gap: 10px;
+}
+
+.current-price {
+    grid-column: 1 / span 8;
+    order: 1;
+    text-align: center;
+    font-size: 25px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -1px;
+    margin-bottom: 5px;
+}
+
+
+
+
+.micro-pill {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+    .micro-pill span {
+        font-size: 15px;
+        font-weight: 600;
+        margin-left: 8px;
+        color: #F2F5F8;
+    }
+
+    .micro-pill.open {
+        background: rgba(242, 245, 248, 0.2);
+        grid-column: 2 / span 6;
+        order: 2;
+    }
+
+    .micro-pill.current {
+        background: rgba(242, 245, 248, 0.2);
+        grid-column: 3 / span 4;
+        order: 1;
+    }
+
+    .micro-pill.high {
+        background: rgba(9, 103, 0, 0.7);
+        grid-column: 1 / span 4;
+        order: 3;
+    }
+
+    .micro-pill.low {
+        background: rgba(255, 0, 0, 0.4);
+        grid-column: 5 / span 4; /* Takes the right half of the bottom row */
+        order: 4;
+    }
+
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Blur everything behind modal */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+    /* Show modal */
+    .modal-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+/* Modal box */
+.modal {
+    width: min(420px, 90vw);
+    max-height: 70vh;
+    background: rgba(5, 12, 25, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    overflow: hidden;
+}
+
+/* Title */
+.modal-title {
+    margin: 0 0 15px;
+    color: #ffffff;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+}
+
+/* List */
+.modal-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 55vh;
+    overflow-y: auto;
+}
+
+    /* Items */
+    .modal-list li {
+        margin-bottom: 10px;
+    }
+
+    /* Buttons */
+    .modal-list button {
+        width: 100%;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.06);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.2s ease;
+    }
+
+        .modal-list button:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .modal-list button:active {
+            transform: scale(0.98);
+        }

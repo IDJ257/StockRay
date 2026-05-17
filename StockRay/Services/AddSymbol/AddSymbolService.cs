@@ -57,7 +57,7 @@ namespace StockRay.Services.AddSymbol
 
                     if (!user.TryAddSymbolToWatch(symbols[i]))
                     {
-                        return new ServiceResult<List<UserSymbolsOutboundDto>>(false);
+                        continue;
                     }
 
 

@@ -318,6 +318,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     //renderDashboard();
     await loadDashboard();
     const publicConnection = connect();
-    await publicConnection.start(handleSignalUpdate);
-    await publicConnection.joinPublicGroup("Public");
+
+    await publicConnection.joinPublicGroup("Public", handleSignalUpdate);
 });

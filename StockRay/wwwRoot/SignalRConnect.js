@@ -4,26 +4,34 @@
         .withAutomaticReconnect()
         .build();
 
-    const start = async (onUpdate) => {
+    const start = async () => {
+        await connection.start();
+
+    };
+
+    const joinPublicGroup = async (onUpdate) => {
+
+        await start();
 
         connection.on("ReceivePublicUpdate", (updates) => {
             if (!Array.isArray(updates)) return;
-
             onUpdate(updates);
-        });
+        })
 
-        await connection.start();
         await connection.invoke("JoinGroup", "Public");
     };
 
-    const joinPublicGroup = async (group) => {
-        await connection.invoke("JoinGroup", group);
-    };
+    const joinGroups = async (groups, onUpdate) => {
+        await start();
 
-    const joinGroups = async (groups) => {
-        if (!Array.isArray(groups) || groups.length === 0) return;
+        connection.on("ReceiveGroupUpdate", (updates) => {
+            if (!Array.isArray(updates)) return;
+            onUpdate(updates);
+        });
 
-        await connection.invoke("JoinGroups", groups);
+        if (Array.isArray(groups) && groups.length > 0) {
+            await connection.invoke("JoinGroups", groups);
+        }
     };
 
     const stop = async () => {
@@ -31,8 +39,6 @@
     };
 
     return {
-        start,
-        stop,
         joinPublicGroup,
         joinGroups
     };
