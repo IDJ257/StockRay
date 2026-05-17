@@ -81,7 +81,7 @@ export function setupLoginModal() {
                 body: JSON.stringify(payload)
             });
 
-            const data = await response.text();
+            const data = await response.json();
 
             if (!response.ok) {
                 setMessage(`${data}`, true);
@@ -91,7 +91,7 @@ export function setupLoginModal() {
 
 
             setMessage("Login successful.", false);
-            localStorage.setItem("stockrayJWT", data);
+            localStorage.setItem("stockrayJWT", data.value);
 
             setTimeout(() => {
                 closeModal();

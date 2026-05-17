@@ -11,6 +11,7 @@ using StockRay.Services.Register;
 using StockRay.Services.RemoveSymbol;
 using StockRay.Shared;
 using StockRay.SignalHub;
+using System.Security.Claims;
 namespace StockRay.Endpoints
 {
 
@@ -42,7 +43,7 @@ namespace StockRay.Endpoints
             app.MapPost("/RemoveSymbol/{id}", RemoveSymbol).RequireAuthorization();
 
 
-            app.MapGet("/GetSymbols/{id}", GetSymbols).RequireAuthorization();
+            app.MapGet("/GetSymbols", GetSymbols).RequireAuthorization();
 
 
 
@@ -54,12 +55,18 @@ namespace StockRay.Endpoints
 
 
         public static async Task<IResult> GetSymbols(
-          [FromRoute] int id,
-          GetSymbolService getSymbolService
+          GetSymbolService getSymbolService,
+          ClaimsPrincipal claims
 
           )
         {
-            var res = await getSymbolService.GetSymbolsAsync(id);
+            //tva e samo workaround. Nqq da e null sigurno, ama samo za da raboti inache nie s React-a sh opravim neshtat
+
+            var userId = claims.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null) return Results.Forbid();
+
+            var res = await getSymbolService.GetSymbolsAsync(int.Parse(userId));
             return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest(res);
 
         }
@@ -120,7 +127,7 @@ namespace StockRay.Endpoints
             var res = await loginService.LoginAsync(loginDto.Email, loginDto.Password);
             
             
-            return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest(res.Value);
+            return res.HasPassed ? Results.Ok(new { res.Value }) : Results.BadRequest(res.Value);
         }
 
         public static IResult GetPublicDashboard(

@@ -1,4 +1,4 @@
-﻿export function setupRegisterModal(onSuccessCallBack) {
+﻿export  function setupRegisterModal(onSuccessCallBack) {
     const registerLink = document.querySelector("[data-register-open]");
     const registerOverlay = document.getElementById("registerOverlay");
     const registerForm = document.getElementById("registerForm");

@@ -1,6 +1,7 @@
 ﻿
 import { setupLoginModal, openModal } from "../Login/login.js";
 import { setupRegisterModal } from "../Register/register.js";
+import { connect } from "../SignalRConnect.js"
 
 const grid = document.getElementById("dashboardGrid");
 const symbolsById = new Map();
@@ -87,50 +88,36 @@ const loadDashboard = async () => {
     }
 };
 
-const startHub = async () => {
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/sym-notif")
-        .withAutomaticReconnect()
-        .build();
+const handleSignalUpdate = (updates) => {
 
-    connection.on("ReceivePublicUpdate", (updates) => {
-        if (!Array.isArray(updates)) {
+
+    updates.forEach(update => {
+        if (!symbolsById.has(update.id)) {
             return;
         }
-
-        updates.forEach((update) => {
-            if (!symbolsById.has(update.id)) {
-                return;
-            }
-
-            const existing = symbolsById.get(update.id);
-            existing.open = update.open;
-            existing.high = update.high;
-            existing.low = update.low;
-            existing.currentPrice = update.currentPrice;
+        const existing = symbolsById.get(update.id);
+        existing.open = update.open;
+        existing.high = update.high;
+        existing.low = update.low;
+        existing.currentPrice = update.currentPrice;
 
 
-            const card = cardsById.get(update.id);
+        const card = cardsById.get(update.id);
 
 
-            card.querySelector(".micro-pill.open span").textContent =
-                formatNumber(update.open);
+        card.querySelector(".micro-pill.open span").textContent =
+            formatNumber(update.open);
 
-            card.querySelector(".current-price").textContent =
-                formatNumber(update.currentPrice);
+        card.querySelector(".current-price").textContent =
+            formatNumber(update.currentPrice);
 
-            card.querySelector(".micro-pill.high span").textContent =
-                formatNumber(update.high);
+        card.querySelector(".micro-pill.high span").textContent =
+            formatNumber(update.high);
 
-            card.querySelector(".micro-pill.low span").textContent =
-                formatNumber(update.low);
-        });
-
+        card.querySelector(".micro-pill.low span").textContent =
+            formatNumber(update.low);
 
     });
-
-    await connection.start();
-    await connection.invoke("JoinGroup", "Public");
 };
 
 /*const setupRegisterModal = () => {
@@ -325,10 +312,12 @@ const startHub = async () => {
 document.addEventListener("DOMContentLoaded", async () => {
 
 
-    setupLoginModal();
-    setupRegisterModal(() => openModal());
+     setupLoginModal();
+     setupRegisterModal(() => openModal());
     //tva e v sluchai che neshto go nqma GETtera i za da ne e prazen ekran da go renderne s prazni stoinosti
     //renderDashboard();
     await loadDashboard();
-    await startHub();
+    const publicConnection = connect();
+    await publicConnection.start(handleSignalUpdate);
+    await publicConnection.joinPublicGroup("Public");
 });

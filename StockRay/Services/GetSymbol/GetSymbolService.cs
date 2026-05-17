@@ -24,7 +24,8 @@ namespace StockRay.Services.GetSymbol
 
         public async Task<ServiceResult<List<UserSymbolsOutboundDto>>> GetSymbolsAsync(int userId)
         {
-
+            // po gramoten error handling 
+            //moje bi da se vrushta serviceResult
             var symbolIds = await _context.Users.Where(u => u.Id == userId)
                 .SelectMany(s => s.Symbols)
                 .Select(ls => ls.Id)

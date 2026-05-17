@@ -27,6 +27,8 @@ namespace StockRay.SignalHub
             _activeGroup = activeGroup;
         }
 
+
+        //SAMO ZA PUBLIC GROUPATA 
         //AUTHORIZE
         public async Task JoinGroup(string group)
         {
