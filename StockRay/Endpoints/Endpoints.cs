@@ -117,10 +117,10 @@ namespace StockRay.Endpoints
             )
         {
             //Moje bi trqq vrushtame usera
-            var res = await loginService.LoginAsync(loginDto.UserName, loginDto.Password);
-
-
-            return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest(res);
+            var res = await loginService.LoginAsync(loginDto.Email, loginDto.Password);
+            
+            
+            return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest(res.Value);
         }
 
         public static IResult GetPublicDashboard(
