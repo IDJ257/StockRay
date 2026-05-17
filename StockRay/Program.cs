@@ -153,13 +153,13 @@ namespace StockRay
 
             app.UseAuthentication();
 
-            app.UseAuthorization();
+           // app.UseAuthorization();
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseRouting();
 
-        
+            app.UseAuthorization();
 
             app.MapEndpoints();
 

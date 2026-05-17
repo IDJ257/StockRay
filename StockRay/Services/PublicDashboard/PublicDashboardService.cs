@@ -3,7 +3,9 @@ using System.Collections.Immutable;
 namespace StockRay.Services.PublicDashboard
 {
 
-    public record PublicDashboardDto(ImmutableList<SymbolDto> Symbols);
+    public record OutBoundPublicDashBoardStock(int Id, string Name, float Open, float High, float Low, float CurrentPrice);
+
+    public record PublicDashboardDto(ImmutableList<OutBoundPublicDashBoardStock> Symbols);
 
 
     public class PublicDashboardService
@@ -19,7 +21,12 @@ namespace StockRay.Services.PublicDashboard
         public ServiceResult<PublicDashboardDto> GivePublicDashboard()
         {
 
-            var getPublicDashboardSymb = _fastAccess.GetSymbols().Where(s => s.IsTopNine).ToImmutableList();
+            //moje tuk da se formatira s Math.Round ama za sega sh go ostavim na front-enda
+            var getPublicDashboardSymb = _fastAccess
+                .GetSymbols()
+                .Where(s => s.IsTopNine)
+                .Select(s => new OutBoundPublicDashBoardStock(s.Id, s.Name, s.Open, s.High, s.Low, s.CurrentPrice))
+                .ToImmutableList();
 
             if (getPublicDashboardSymb == null)
             {
