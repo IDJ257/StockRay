@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using StockRay.BackGroundJobs;
 using StockRay.Models;
+using StockRay.Other;
 using StockRay.Services.AddSymbol;
+using StockRay.Services.GetAllSymbols;
 using StockRay.Services.GetSymbol;
 using StockRay.Services.Login;
 using StockRay.Services.PublicDashboard;
@@ -45,6 +47,8 @@ namespace StockRay.Endpoints
 
             app.MapGet("/GetSymbols", GetSymbols).RequireAuthorization();
 
+            app.MapGet("/GetAllSymbols", GetAllSymbols);
+
 
 
 
@@ -53,6 +57,20 @@ namespace StockRay.Endpoints
         }
 
 
+        public static IResult GetAllSymbols(
+         GetAllSymbolsService getAllSymbolsService
+
+         )
+        {
+            //tva e samo workaround. Nqq da e null sigurno, ama samo za da raboti inache nie s React-a sh opravim neshtat
+
+
+
+            var res = getAllSymbolsService.GetAllSymbols();
+            //return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest(res);
+
+            return Results.Ok(res);
+        }
 
         public static async Task<IResult> GetSymbols(
           GetSymbolService getSymbolService,

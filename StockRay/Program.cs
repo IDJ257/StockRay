@@ -24,6 +24,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using StockRay.Other;
 using Microsoft.AspNetCore.Rewrite;
+using StockRay.Services.GetAllSymbols;
 
 
 namespace StockRay
@@ -133,6 +134,7 @@ namespace StockRay
             builder.Services.AddScoped<AddSymbolService>();
             builder.Services.AddScoped<RemoveSymbolService>();
             builder.Services.AddScoped<GetSymbolService>();
+            builder.Services.AddScoped<GetAllSymbolsService>();
 
 
 

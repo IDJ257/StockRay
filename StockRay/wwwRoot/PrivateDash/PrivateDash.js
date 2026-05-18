@@ -6,12 +6,9 @@ import { connect } from "../SignalRConnect.js"
 const symbolsById = new Map();
 const cardsById = new Map();
 const authMess = "You are not authorized to see the contents of the page Please register or login. Click close for redirect"
-
+const selectedForAdd = new Set(); //za sega e global ama nqqma da e
 
 const root = document.getElementById("privateDash");
-
-const modal = document.getElementById("stocksModal");
-const stocksList = document.getElementById("stocksList");
 
 const formatNumber = (value) => {
     if (value === null || value === undefined || Number.isNaN(value)) {
@@ -20,9 +17,96 @@ const formatNumber = (value) => {
     return Number(value).toFixed(2);
 };
 
+const getAllSymbols = async () => {
+
+    try {
+        const response = await fetch("/GetAllSymbols");
+
+        if (!response.ok) {
+            //sh vidim
+        }
+
+        const data = response.json();
+
+
+        return data;
+    } catch (e) {
+
+    }
+
+
+
+}
+
+const buildItems = (symbol) => {
+
+    const li = document.createElement("li");
+
+    li.classList.add("item");
+
+    const name = document.createElement("span");
+    name.classList.add("item-name");
+    name.textContent = symbol.name;
+
+    const checkBox = document.createElement("input");
+    checkBox.type = "checkbox";
+
+    checkBox.addEventListener("click", (e) => {
+        e.stopPropagation();
+    });
+
+    checkBox.addEventListener("change", (e) => {
+        if (e.target.checked) {
+            selected.add(symbol.id);
+        } else {
+            selected.delete(symbol.id);
+        }
+    });
+
+    li.addEventListener("click", () => {
+        checkBox.checked = !checkBox.checked;
+        checkBox.dispatchEvent(new Event("change"));
+    });
+
+    li.append(name, checkBox);
+
+    return li;
+
+
+}
+
 const openAllStocks = async () => {
 
- 
+    try {
+        //moje da ne se chaka a dokato se buildva da se runne ama kak i dae.
+        const modal = document.getElementById("modal");
+        const fragmentContainer = document.createDocumentFragment();
+        const ul = document.getElementById("itemList");
+        const list = await getAllSymbols();
+
+        list.forEach((symbol) => {
+            const listItem = buildItems(symbol)
+
+            fragmentContainer.appendChild(listItem);
+        });
+
+        ul.replaceChildren(fragmentContainer);
+
+
+        modal.classList.remove("hidden")
+
+    } catch (e) {
+
+    }
+
+
+
+
+
+    //kum itemList da appendvam
+}
+
+const closeAllStocks = () => {
 
 }
 
@@ -30,6 +114,28 @@ const addSymbol = async () => {
 
 }
 
+
+
+const buildAddBubble = () => {
+
+    const bubbleAdd = document.createElement("div");
+    bubbleAdd.className = "bubble-add";
+
+
+    const bubbleContent = document.createElement("div");
+    bubbleContent.className = "bubble-add-content";
+    bubbleContent.textContent = "+";
+
+    bubbleAdd.addEventListener("click", () => {
+        openAllStocks();
+    });
+
+
+    bubbleAdd.appendChild(bubbleContent);
+
+
+    return bubbleAdd;
+}
 
 const createCard = (symbol) => {
     const card = document.createElement("div");
@@ -50,32 +156,22 @@ const createCard = (symbol) => {
 }
 
 const render = () => {
-    root.innerHTML = "";
 
+    const root = document.getElementById("stocks");
 
-    const addBubble = document.createElement("div");
-    addBubble.className = "bubble bubble-add";
-    addBubble.dataset.action = "add-symbol";
+    root.appendChild(buildAddBubble());
 
-    const content = document.createElement("div");
-    content.className = "bubble-add-content";
-    content.textContent = "+";
-
-    addBubble.appendChild(content);
-
-    addBubble.addEventListener("click", () => {
-        openAllStocks();
-    
-    });
-
-    root.appendChild(addBubble);
-
-    symbolsById.forEach((symbol, id) => {
+    symbolsById.forEach((symbol, key) => {
 
         const card = createCard(symbol);
-        cardsById.set(id, card);
+
+        cardsById.set(key, card);
+
         root.appendChild(card);
     });
+
+
+
 };
 
 
@@ -168,7 +264,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     render();
 
-      
+
     const groups = privateSymbols.map(s => s.name);
 
     await connection.joinGroups(groups, handleSignalUpdate);

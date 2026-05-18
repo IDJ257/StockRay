@@ -9,23 +9,31 @@
 </head>
 <body>
 
-    <main id="dashboard">
-        <div id="privateDash"></div>
+    <main id="mainRoot">
+        <div id="stocks" class="privateDash"></div>
     </main>
-    <div class="indicator-arrow"></div>
+
+    <div class="modal-overlay hidden" id="modal">
+        <div class="modal">
+
+            <div class="modal-header">
+                <h2>Add Items</h2>
+                <p>Select items from the list</p>
+            </div>
+
+            <ul class="item-list" id="itemList">
 
 
-    <!--<div id="stockModal" class="modal hidden">
-        <div class="modal-content">
-            <h2>Select Stocks</h2>
 
-            <div id="stockList"></div>
+            </ul>
 
-            <button id="confirmAdd">Add Selected</button>
-            <button id="closeModal">Close</button>
+            <div class="modal-footer">
+                <button class="btn btn-cancel">Cancel</button>
+                <button class="btn btn-add">Add</button>
+            </div>
+
         </div>
-    </div>-->
-
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@9.0.6/dist/browser/signalr.min.js"></script>
     <script type="module" src="PrivateDash.js"></script>
