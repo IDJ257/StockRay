@@ -2,11 +2,15 @@
 
 import { error } from "./PrivateDashError.js"
 import { connect } from "../SignalRConnect.js"
-
+let connection;
 const symbolsById = new Map();
 const cardsById = new Map();
 const authMess = "You are not authorized to see the contents of the page Please register or login. Click close for redirect"
+
+//da se populatne sus simvolite koito vechce usera-ima
 const selectedForAdd = new Set(); //za sega e global ama nqqma da e
+
+
 
 const root = document.getElementById("privateDash");
 
@@ -57,9 +61,9 @@ const buildItems = (symbol) => {
 
     checkBox.addEventListener("change", (e) => {
         if (e.target.checked) {
-            selected.add(symbol.id);
+            selectedForAdd.add(symbol.id);
         } else {
-            selected.delete(symbol.id);
+            selectedForAdd.delete(symbol.id);
         }
     });
 
@@ -107,10 +111,84 @@ const openAllStocks = async () => {
 }
 
 const closeAllStocks = () => {
+    const modal = document.getElementById("modal");
+    const ul = document.getElementById("itemList");
 
+    modal.classList.add("hidden");
+    selectedForAdd.clear();
+    const checkboxes = ul.querySelectorAll("input[type='checkbox']");
+    checkboxes.forEach(cb => cb.checked = false);
 }
 
-const addSymbol = async () => {
+const addSymbols = async () => {
+
+    const root = document.getElementById("stocks");
+
+    try {
+        const response = await fetch("/AddSymbol", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("stockrayJWT")}`
+            },
+            body: JSON.stringify({
+                symbolIds: [...selectedForAdd]
+            })
+        });
+
+
+        if (!response.ok) {
+
+            if (response.status === 401) {
+
+
+                const err = error(authMess, () => {
+                    root.innerHTML = "";
+                    localStorage.removeItem("stockrayJWT");
+                    window.location.href = "/PublicDash/";
+                })
+
+                root.appendChild(err);
+                return;
+            }
+
+            //error("", () => {
+            //    root.innerHTML = "";
+            //})
+
+        }
+
+        const data = await response.json();
+
+        data.forEach((s => {
+
+            symbolsById.set(s.id, s);
+
+            const card = createCard(s);
+
+            cardsById.set(s.id, card)
+
+            root.appendChild(card);
+
+
+        }));
+
+        //CONNECTTTION
+
+        const groups = data.map(s => s.name);
+
+        await connection.joinGroups(groups);
+
+        closeAllStocks();
+
+
+     
+
+    } catch (e) {
+
+    }
+
+
 
 }
 
@@ -178,7 +256,7 @@ const render = () => {
 //duplicate, shte se pravi
 const handleSignalUpdate = (updates) => {
 
-
+    //moje da se spre da se piolzva symbolsById
     updates.forEach(update => {
         if (!symbolsById.has(update.id)) {
             return;
@@ -210,6 +288,7 @@ const handleSignalUpdate = (updates) => {
 
 const loadPrivateSymbols = async () => {
 
+    const root = document.getElementById("mainRoot");
 
     const response = await fetch("/GetSymbols", {
         method: "GET",
@@ -249,11 +328,23 @@ const loadPrivateSymbols = async () => {
 
 }
 
+document.getElementById("cancelBtn").addEventListener("click", closeAllStocks);
+document.getElementById("addBtn").addEventListener("click", addSymbols);
 
 document.addEventListener("DOMContentLoaded", async () => {
 
 
-    const connection = connect();
+    connection = connect();
+    
+    connection.connection.on("ReceiveGroupUpdate", (updates) => {
+
+        if (!Array.isArray(updates)) return;
+
+        handleSignalUpdate(updates);
+    });
+
+    await connection.start();
+
 
     const privateSymbols = await loadPrivateSymbols();
     if (!privateSymbols) return;
@@ -267,7 +358,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const groups = privateSymbols.map(s => s.name);
 
-    await connection.joinGroups(groups, handleSignalUpdate);
-
-
+    await connection.joinGroups(groups);
 });
+

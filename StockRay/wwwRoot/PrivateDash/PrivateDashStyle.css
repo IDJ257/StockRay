@@ -23,6 +23,7 @@ body {
 
 
 .error-blimp {
+    justify-self:center;
     width: min(900px, 92vw);
     min-height: 220px;
     background: rgba(255, 255, 255, 0.08);
@@ -343,4 +344,43 @@ body {
         background: rgba(77, 163, 255, 0.35); 
         border-radius: 10px;
         border: 2px solid #0B1F3B; 
+    }
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end; 
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.btn {
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.btn-cancel {
+    background: rgba(255, 255, 255, 0.06);
+    color: #F2F5F8;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+    .btn-cancel:hover {
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+.btn-add {
+    background: #4DA3FF;
+    color: #0B1F3B;
+    font-weight: 600;
+}
+
+    .btn-add:hover {
+        background: #6bb4ff;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(77, 163, 255, 0.25);
     }

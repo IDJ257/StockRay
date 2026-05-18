@@ -4,23 +4,32 @@ export function error(message, onClose) {
 
     const element = document.createElement("div");
 
+    const container = document.createElement("div");
+    container.classList.add("error-text");
+
     element.className = "error-blimp";
 
+    const title = document.createElement("div");
+    title.classList.add("error-title");
+    title.textContent = "Something went wrong";
 
-    //ne e mnogo hubavo ama sh svurhsi rabota za sega.
-    element.innerHTML = `
-      <div class="error-text">
-            <div class="error-title">Something went wrong</div>
-            <div class="error-message">
-               ${message}
-            </div>
-        </div>
+    const messageEl = document.createElement("div");
+    messageEl.classList.add("error-message");
+    messageEl.textContent = message;
 
-        <button class="error-close-btn">Close</button>
-    
-    `
+    container.appendChild(title);
+    container.appendChild(messageEl);
 
-    element.addEventListener("click", () => {
+    const closeBtn = document.createElement("button");
+    closeBtn.classList.add("error-close-btn");
+    closeBtn.textContent = "Close";
+
+
+    element.replaceChildren();
+    element.appendChild(container);
+    element.appendChild(closeBtn);
+
+    closeBtn.addEventListener("click", () => {
         if (onClose) {
             onClose();
         }

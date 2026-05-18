@@ -40,7 +40,7 @@ namespace StockRay.Endpoints
             app.MapPost("/login", Login);
 
             //id = userId
-            app.MapPost("/AddSymbol/{id}", AddSymbol).RequireAuthorization();
+            app.MapPost("/AddSymbol", AddSymbol).RequireAuthorization();
 
             app.MapPost("/RemoveSymbol/{id}", RemoveSymbol).RequireAuthorization();
 
@@ -106,13 +106,17 @@ namespace StockRay.Endpoints
 
 
         public static async Task<IResult> AddSymbol(
-            [FromRoute] int id,
             AddSymbolService addSymbolService,
-            UserSymbolInboundDto userSymbolInbound
+            UserSymbolInboundDto userSymbolInbound,
+            ClaimsPrincipal claims
             )
         {
+            var userId = claims.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var res = await addSymbolService.AddSymbolAsync(userSymbolInbound, id);
+            if (userId == null) return Results.Forbid();
+
+            var res = await addSymbolService.AddSymbolAsync(userSymbolInbound, int.Parse(userId));
+
 
             return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest();
 

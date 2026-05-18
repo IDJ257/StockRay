@@ -40,7 +40,28 @@ namespace StockRay.Other
             //za da doide edno i sushto neshto ne se e terminiralo
             //kato dade error togava sh mislim
 
-            _connectionGroups.TryAdd(connectionId, new ConcurrentBag<string>(groups));
+            if (_connectionGroups.ContainsKey(connectionId))
+            {
+                //za sega taka sh raboti
+                if(groups.Count == 1)
+                {
+                    _connectionGroups[connectionId].Add(groups[0]);
+                }
+                else
+                {
+                    foreach (var item in groups)
+                    {
+                        _connectionGroups[connectionId].Add(item);
+                    }
+                }
+              
+            }
+            else
+            {
+                _connectionGroups.TryAdd(connectionId, new ConcurrentBag<string>(groups));
+            }
+
+               
             
 
         }

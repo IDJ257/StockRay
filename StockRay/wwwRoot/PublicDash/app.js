@@ -90,7 +90,7 @@ const loadDashboard = async () => {
 
 const handleSignalUpdate = (updates) => {
 
-
+    //UPDATES E LIST<OUTBOUNDSTOCKPRICE>
     updates.forEach(update => {
         if (!symbolsById.has(update.id)) {
             return;
@@ -319,5 +319,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadDashboard();
     const publicConnection = connect();
 
-    await publicConnection.joinPublicGroup("Public", handleSignalUpdate);
+    //ne e  mngoo krasivo
+    publicConnection.connection.on("ReceivePublicUpdate", (updates) => {
+        if (!Array.isArray(updates)) return;
+        handleSignalUpdate(updates);
+    })
+
+    await publicConnection.start();
+
+    await publicConnection.joinPublicGroup();
 });

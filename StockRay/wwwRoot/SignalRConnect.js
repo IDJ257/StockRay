@@ -5,29 +5,18 @@
         .build();
 
     const start = async () => {
+       
         await connection.start();
 
     };
 
-    const joinPublicGroup = async (onUpdate) => {
-
-        await start();
-
-        connection.on("ReceivePublicUpdate", (updates) => {
-            if (!Array.isArray(updates)) return;
-            onUpdate(updates);
-        })
+    const joinPublicGroup = async () => {
 
         await connection.invoke("JoinGroup", "Public");
     };
 
-    const joinGroups = async (groups, onUpdate) => {
-        await start();
-
-        connection.on("ReceiveGroupUpdate", (updates) => {
-            if (!Array.isArray(updates)) return;
-            onUpdate(updates);
-        });
+    const joinGroups = async (groups) => {
+  
 
         if (Array.isArray(groups) && groups.length > 0) {
             await connection.invoke("JoinGroups", groups);
@@ -39,6 +28,9 @@
     };
 
     return {
+        connection,
+        start,
+        stop,
         joinPublicGroup,
         joinGroups
     };

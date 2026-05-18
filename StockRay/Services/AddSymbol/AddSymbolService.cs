@@ -30,8 +30,10 @@ namespace StockRay.Services.AddSymbol
             //prosto shte dobavqme simvoli kum useri chrez tehnite ID-ta.
             var symbols = await _context.Symbols.Where(s => inboundDto.SymbolIds.Contains(s.Id)).ToListAsync();
 
-         
 
+            //ako hangne neshto moje da e TUKa
+            List<UserSymbolsOutboundDto> addedSymbols = new List<UserSymbolsOutboundDto>();
+         
 
 
             if (inboundDto.SymbolIds.Count == 1)
@@ -60,6 +62,14 @@ namespace StockRay.Services.AddSymbol
                         continue;
                     }
 
+                    addedSymbols.Add(new UserSymbolsOutboundDto(
+                        symbols[i].Id,
+                        symbols[i].Name,
+                        symbols[i].Open,
+                        symbols[i].High,
+                        symbols[i].Low,
+                        symbols[i].CurrentPrice
+                        ));
 
 
                 }
@@ -67,8 +77,8 @@ namespace StockRay.Services.AddSymbol
 
                 await _context.SaveChangesAsync();
 
-                return new ServiceResult<List<UserSymbolsOutboundDto>>(true, symbols
-                        .Select(s => new UserSymbolsOutboundDto(s.Id, s.Name, s.Open, s.High, s.Low, s.CurrentPrice)).ToList());
+                return new ServiceResult<List<UserSymbolsOutboundDto>>(true, addedSymbols);
+                        
             }
 
 
