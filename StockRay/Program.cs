@@ -131,8 +131,9 @@ namespace StockRay
             builder.Services.AddScoped<RegisterService>();
             builder.Services.AddScoped<LoginService>();
             builder.Services.AddScoped<PublicDashboardService>();
-            builder.Services.AddScoped<AddSymbolService>();
             builder.Services.AddScoped<RemoveSymbolService>();
+            builder.Services.AddScoped<AddSymbolService>();
+            //builder.Services.AddScoped<RemoveSymbolService>();
             builder.Services.AddScoped<GetSymbolService>();
             builder.Services.AddScoped<GetAllSymbolsService>();
 

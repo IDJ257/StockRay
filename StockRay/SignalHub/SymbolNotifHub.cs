@@ -55,6 +55,16 @@ namespace StockRay.SignalHub
 
         }
 
+        public async Task LeaveGroup(string group)
+        {
+            var connId = Context.ConnectionId;
+
+            _activeGroup.LeaveGroup(connId, group);
+
+            await Groups.RemoveFromGroupAsync(connId, group);
+
+        }
+
         public override Task OnDisconnectedAsync(Exception? exception)
         {
             _activeGroup.RemoveWhenLostConnection(Context.ConnectionId);

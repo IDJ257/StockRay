@@ -27,12 +27,17 @@
         await connection.stop();
     };
 
+    const leaveGroup = async (group) => {
+        await connection.invoke("LeaveGroup", group)
+    }
+
     return {
         connection,
         start,
         stop,
         joinPublicGroup,
-        joinGroups
+        joinGroups,
+        leaveGroup
     };
 
 }

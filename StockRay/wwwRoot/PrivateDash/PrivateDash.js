@@ -192,6 +192,40 @@ const addSymbols = async () => {
 
 }
 
+const removeSymbol = async (removeSymbol) => {
+
+    const root = document.getElementById("stocks");
+
+
+    try {
+
+        const response = await fetch("/RemoveSymbol", {
+            method: "DELETE",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("stockrayJWT")}`
+            },
+            body: JSON.stringify({
+                symbolIds: [removeSymbol.id]
+            })
+        })
+
+        if (!response.ok) {
+            //error
+        }
+
+        await connection.leaveGroup(removeSymbol.name);
+
+        root.removeChild(cardsById.get(removeSymbol.id));
+        
+
+    } catch (e) {
+        console.log(e);
+    }
+   
+
+
+}
 
 
 const buildAddBubble = () => {
@@ -219,16 +253,50 @@ const createCard = (symbol) => {
     const card = document.createElement("div");
     card.className = "bubble";
 
-    card.innerHTML = `
-            <button class="bubble-close">X</button>
-            <h3>${symbol.name}</h3>
-            <div class="micro-grid">
-                <div class="current-price">${formatNumber(symbol.currentPrice)}</div>
-                <div class="micro-pill open">Open <span>${formatNumber(symbol.open)}</span></div>
-                <div class="micro-pill high">High <span>${formatNumber(symbol.high)}</span></div>
-                <div class="micro-pill low">Low <span>${formatNumber(symbol.low)}</span></div>
-            </div>
-        `;
+
+    const btn = document.createElement("button");
+    btn.className = "bubble-close";
+    btn.textContent = "X";
+    card.appendChild(btn);
+
+
+    const title = document.createElement("h3");
+    title.textContent = symbol.name;
+    card.appendChild(title);
+
+
+    const grid = document.createElement("div");
+    grid.className = "micro-grid";
+
+    const price = document.createElement("div");
+    price.className = "current-price";
+    price.textContent = formatNumber(symbol.currentPrice);
+    grid.appendChild(price);
+
+    function makePill(label, value, className) {
+        const pill = document.createElement("div");
+        pill.className = `micro-pill ${className}`;
+
+        const text = document.createTextNode(`${label} `);
+        const span = document.createElement("span");
+        span.textContent = formatNumber(value);
+
+        pill.appendChild(text);
+        pill.appendChild(span);
+
+        return pill;
+    }
+
+    grid.appendChild(makePill("Open", symbol.open, "open"));
+    grid.appendChild(makePill("High", symbol.high, "high"));
+    grid.appendChild(makePill("Low", symbol.low, "low"));
+
+    card.appendChild(grid);
+
+    btn.addEventListener("click", (e) => {
+        
+        removeSymbol(symbol);
+    })
 
     return card;
 }

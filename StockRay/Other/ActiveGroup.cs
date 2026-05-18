@@ -10,7 +10,9 @@ namespace StockRay.Other
 
         void RemoveWhenLostConnection(string connectionString);
 
-        public IReadOnlyDictionary<string, ConcurrentBag<string>> ConnectionGroups { get; }
+        void LeaveGroup(string connectionString, string group);
+
+        public IReadOnlyDictionary<string, List<string>> ConnectionGroups { get; }
 
 
 
@@ -18,18 +20,20 @@ namespace StockRay.Other
 
     public class ActiveGroup : IActiveGroup
     {
-
+        //MOJE I HASHSET<T>
+        //MINAVA SE NA LIST SHOTO BAGA E NAPRAVEN DA SE DISPOSEVA. AKO IMA HANG 
+        //PROSTO SHTE NAPRAVIM LOCK{}
    
         //CONNECTION ID -> LSIT OT GROUPI
-        private readonly ConcurrentDictionary<string, ConcurrentBag<string>> _connectionGroups;
+        private readonly ConcurrentDictionary<string, List<string>> _connectionGroups;
 
-        public IReadOnlyDictionary<string, ConcurrentBag<string>> ConnectionGroups { get => _connectionGroups; }
+        public IReadOnlyDictionary<string, List<string>> ConnectionGroups { get => _connectionGroups; }
 
 
         public ActiveGroup()
         {
 
-            _connectionGroups = new ConcurrentDictionary<string, ConcurrentBag<string>>();
+            _connectionGroups = new ConcurrentDictionary<string, List<string>>();
              
 
         }
@@ -58,12 +62,24 @@ namespace StockRay.Other
             }
             else
             {
-                _connectionGroups.TryAdd(connectionId, new ConcurrentBag<string>(groups));
+                _connectionGroups.TryAdd(connectionId, new List<string>(groups));
             }
 
                
             
 
+        }
+
+        public void LeaveGroup(string connectionId, string group)
+        {
+            if (_connectionGroups.ContainsKey(connectionId))
+            {
+                _connectionGroups[connectionId].Remove(group);
+            }
+            else
+            {
+                throw new ArgumentException("Connection error");
+            }
         }
 
         public void RemoveWhenLostConnection(string connectionId)

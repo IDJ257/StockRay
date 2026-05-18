@@ -42,8 +42,7 @@ namespace StockRay.Endpoints
             //id = userId
             app.MapPost("/AddSymbol", AddSymbol).RequireAuthorization();
 
-            app.MapPost("/RemoveSymbol/{id}", RemoveSymbol).RequireAuthorization();
-
+            app.MapDelete("/RemoveSymbol", RemoveSymbol).RequireAuthorization();
 
             app.MapGet("/GetSymbols", GetSymbols).RequireAuthorization();
 
@@ -91,16 +90,19 @@ namespace StockRay.Endpoints
 
 
         public static async Task<IResult> RemoveSymbol(
-            [FromRoute] int id,
-            RemoveSymbolService removeSymbolService,
-            UserSymbolInboundDto userSymbolInbound
+            [FromServices]RemoveSymbolService removeSymbolService,
+            [FromBody]UserSymbolInboundDto userSymbolInbound,
+             ClaimsPrincipal claims
 
             )
         {
+            var userId = claims.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var res = await removeSymbolService.RemoveSymbolAsync(id, userSymbolInbound);
+            if (userId == null) return Results.Forbid();
 
-            return res.HasPassed ? Results.Ok() : Results.BadRequest(res);
+            var res = await removeSymbolService.RemoveSymbolAsync(int.Parse(userId), userSymbolInbound);
+
+            return res.HasPassed ? Results.NoContent() : Results.BadRequest(res);
 
         }
 
