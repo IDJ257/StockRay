@@ -82,6 +82,7 @@ body {
 .bubble {
     width: 240px;
     position: relative;
+    margin-left: 10%;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 28px;
@@ -156,8 +157,10 @@ body {
 
 /*huu togav*/
 .bubble-add {
+
     width: 240px;
     position: relative;
+    margin-left:10%;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 28px;

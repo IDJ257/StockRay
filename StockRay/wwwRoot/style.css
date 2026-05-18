@@ -38,37 +38,6 @@ body {
 
 
 
-.indicator-arrow {
-    position: absolute;
-    top: 15%;
-    right: 1450px;
-    width: 33px;
-    height: 33px;
-    border-top: 4px solid rgba(255,255,255,0.34);
-    border-right: 4px solid rgba(255,255,255,0.34);
-    transform: translateY(-50%) rotate(45deg);
-    opacity: 0.7;
-    pointer-events: none;
-    animation: inwardArrow 1.8s ease-in-out infinite;
-    transition: opacity 0.35s ease, transform 0.35s ease;
-}
-
-@keyframes inwardArrow {
-    0% {
-        transform: translateY(-50%) translateX(0) rotate(45deg);
-        opacity: 0.35;
-    }
-
-    50% {
-        transform: translateY(-50%) translateX(-10px) rotate(45deg);
-        opacity: 0.8;
-    }
-
-    100% {
-        transform: translateY(-50%) translateX(0) rotate(45deg);
-        opacity: 0.35;
-    }
-}
 
 
 
@@ -202,59 +171,6 @@ body.modal-open {
     overflow: hidden;
 }
 
-.menu-shell {
-    position: fixed;
-    inset: 0 auto 0 0;
-    width: 260px;
-    pointer-events: none;
-    z-index: 10;
-}
-
-.menu-edge {
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 65px;
-    pointer-events: auto;
-}
-
-.side-menu {
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 240px;
-    padding: 32px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    background: #0B1F3B;
-    border-right: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 12px 0 28px rgba(0, 0, 0, 0.35);
-    transform: translateX(-100%);
-    opacity: 0;
-    transition: transform 0.45s ease, opacity 0.45s ease;
-    pointer-events: auto;
-}
-
-.menu-shell:hover .side-menu {
-    transform: translateX(0);
-    opacity: 1;
-}
-
-.menu-link {
-    text-decoration: none;
-    color: #F2F5F8;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 14px;
-    padding: 12px 14px;
-    letter-spacing: 0.4px;
-    transition: transform 0.25s ease, background 0.25s ease;
-    cursor: pointer;
-}
-
-    .menu-link:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateX(6px);
-    }
 
 
 

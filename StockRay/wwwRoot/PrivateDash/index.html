@@ -5,12 +5,21 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>StockRay Private Dashboard</title>
     <link rel="stylesheet" href="PrivateDashStyle.css">
+    <link rel="stylesheet" href="/SideMenu.css" />
  
 </head>
-<body>
+<body class="private-page">
+
+    <div class="menu-shell">
+        <div class="menu-edge" aria-hidden="true"></div>
+        <nav class="side-menu" aria-label="Main menu">
+            <a class="menu-link" href="/PublicDash/">Public  Dashboard</a>
+        </nav>
+    </div>
 
     <main id="mainRoot">
         <div id="stocks" class="privateDash"></div>
+        <div class="indicator-arrow"></div>
     </main>
 
     <div class="modal-overlay hidden" id="modal">
@@ -22,9 +31,6 @@
             </div>
 
             <ul class="item-list" id="itemList">
-
-
-
             </ul>
 
             <div class="modal-footer">
