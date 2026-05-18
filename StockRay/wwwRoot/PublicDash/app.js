@@ -1,7 +1,8 @@
 ﻿
 import { setupLoginModal, openModal } from "../Login/login.js";
 import { setupRegisterModal } from "../Register/register.js";
-import { connect } from "../SignalRConnect.js"
+import { connect } from "../SignalRConnect.js";
+import { logout, updateAuthUI } from "../Login/logout.js";
 
 const grid = document.getElementById("dashboardGrid");
 const symbolsById = new Map();
@@ -313,7 +314,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
      setupLoginModal();
-     setupRegisterModal(() => openModal());
+    setupRegisterModal(() => openModal());
+    updateAuthUI();
+
+    const logoutBtn = document.querySelector("[data-logout]");
+
+    logoutBtn?.addEventListener("click", logout);
+    
     //tva e v sluchai che neshto go nqma GETtera i za da ne e prazen ekran da go renderne s prazni stoinosti
     //renderDashboard();
     await loadDashboard();

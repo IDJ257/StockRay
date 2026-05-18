@@ -4,6 +4,7 @@ let loginForm;
 let loginMessage;
 let setMessage;
 
+import { updateAuthUI } from "../Login/logout.js";
 export function openModal() {
     loginForm.reset();
     setMessage("", false);
@@ -92,6 +93,7 @@ export function setupLoginModal() {
 
             setMessage("Login successful.", false);
             localStorage.setItem("stockrayJWT", data.value);
+            updateAuthUI();
 
             setTimeout(() => {
                 closeModal();

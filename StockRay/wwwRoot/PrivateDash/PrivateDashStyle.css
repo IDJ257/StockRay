@@ -19,6 +19,13 @@ body {
 }
 
 
+[data-logout] {
+    display: none;
+}
+
+body.logged-in [data-logout] {
+    display: block;
+}
 
 
 

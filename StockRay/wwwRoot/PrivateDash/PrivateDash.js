@@ -2,10 +2,12 @@
 
 import { error } from "./PrivateDashError.js"
 import { connect } from "../SignalRConnect.js"
+import { logout, updateAuthUI } from "../Login/logout.js";
 let connection;
 const symbolsById = new Map();
 const cardsById = new Map();
 const authMess = "You are not authorized to see the contents of the page Please register or login. Click close for redirect"
+
 
 //da se populatne sus simvolite koito vechce usera-ima
 const selectedForAdd = new Set(); //za sega e global ama nqqma da e
@@ -401,6 +403,11 @@ document.getElementById("addBtn").addEventListener("click", addSymbols);
 
 document.addEventListener("DOMContentLoaded", async () => {
 
+    updateAuthUI();
+
+    const logoutBtn = document.querySelector("[data-logout]");
+
+    logoutBtn?.addEventListener("click", logout);
 
     connection = connect();
     

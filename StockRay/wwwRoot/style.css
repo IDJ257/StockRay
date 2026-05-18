@@ -13,6 +13,14 @@ body {
     justify-content: center;
 }
 
+[data-logout] {
+    display: none;
+}
+
+body.logged-in [data-logout] {
+    display: block;
+}
+
 .page {
     width: min(1100px, 92vw);
     padding: 48px 0;
