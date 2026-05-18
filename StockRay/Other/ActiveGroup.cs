@@ -20,11 +20,7 @@ namespace StockRay.Other
 
     public class ActiveGroup : IActiveGroup
     {
-        //MOJE I HASHSET<T>
-        //MINAVA SE NA LIST SHOTO BAGA E NAPRAVEN DA SE DISPOSEVA. AKO IMA HANG 
-        //PROSTO SHTE NAPRAVIM LOCK{}
-   
-        //CONNECTION ID -> LSIT OT GROUPI
+        //Concurrent collection for thread-safety. Yes the value is not thread-safe so we hope it doesn't hang
         private readonly ConcurrentDictionary<string, List<string>> _connectionGroups;
 
         public IReadOnlyDictionary<string, List<string>> ConnectionGroups { get => _connectionGroups; }
@@ -40,9 +36,7 @@ namespace StockRay.Other
 
         public void AddToGroup(string connectionId, List<string> groups)
         {
-            //Shte vidim dali shte dade error ako doide edno i sushto connectionId
-            //za da doide edno i sushto neshto ne se e terminiralo
-            //kato dade error togava sh mislim
+            
 
             if (_connectionGroups.ContainsKey(connectionId))
             {

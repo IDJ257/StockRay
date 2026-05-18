@@ -28,14 +28,15 @@ namespace StockRay.SignalHub
         }
 
 
-        //SAMO ZA PUBLIC GROUPATA 
-        //AUTHORIZE
+        //Method used only for joining the PUBLIC group and no other
         public async Task JoinGroup(string group)
         {
             await Groups.AddToGroupAsync($"{Context.ConnectionId}", group);
 
         }
 
+
+        //Method for joining the stock groups for private dashboard showing
         public async Task JoinGroups(params string[] groups)
         {
 
@@ -51,10 +52,11 @@ namespace StockRay.SignalHub
                
             }
 
-            //Moje s TASKALL
+
 
         }
 
+        //Mainly for private dashboard as we have an MPA so when we change pages we disconnect/reconnect
         public async Task LeaveGroup(string group)
         {
             var connId = Context.ConnectionId;
@@ -65,6 +67,7 @@ namespace StockRay.SignalHub
 
         }
 
+        //this is for freeing the _activeGroup collection where we track each connection's active connected groups
         public override Task OnDisconnectedAsync(Exception? exception)
         {
             _activeGroup.RemoveWhenLostConnection(Context.ConnectionId);

@@ -26,12 +26,6 @@ namespace StockRay.Endpoints
         public static void MapEndpoints(this IEndpointRouteBuilder app)
         {
 
-            //var group = app.MapGroup("api/");
-
-            //group.MapPost("register", Register);
-
-            //group.MapPost("login", Login);
-
             app.MapGet("/public", GetPublicDashboard);
 
 

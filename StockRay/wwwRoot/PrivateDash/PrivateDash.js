@@ -1,7 +1,7 @@
 ﻿//OTVRAT
 
 import { error } from "./PrivateDashError.js"
-import { connect } from "../SignalRConnect.js"
+import { connect } from "../SignalRClient/SignalRConnect.js"
 import { logout, updateAuthUI } from "../Login/logout.js";
 let connection;
 const symbolsById = new Map();
@@ -27,9 +27,9 @@ const getAllSymbols = async () => {
 
     try {
         const response = await fetch("/GetAllSymbols");
-
+        //TODO: better client-server side exception handlings
         if (!response.ok) {
-            //sh vidim
+            throw new Error("Endpoint issues")
         }
 
         const data = response.json();
@@ -37,7 +37,7 @@ const getAllSymbols = async () => {
 
         return data;
     } catch (e) {
-
+        console.log(e);
     }
 
 
@@ -102,7 +102,7 @@ const openAllStocks = async () => {
         modal.classList.remove("hidden")
 
     } catch (e) {
-
+        console.log(e);
     }
 
 
@@ -154,6 +154,8 @@ const addSymbols = async () => {
                 return;
             }
 
+
+            //TODO: unserialize response data-ta trqbva da ima err mess ako e BadRequest*(;)
             //error("", () => {
             //    root.innerHTML = "";
             //})
@@ -177,6 +179,7 @@ const addSymbols = async () => {
 
         //CONNECTTTION
 
+        //Joining immediately newely added groups
         const groups = data.map(s => s.name);
 
         await connection.joinGroups(groups);
@@ -184,10 +187,10 @@ const addSymbols = async () => {
         closeAllStocks();
 
 
-     
+
 
     } catch (e) {
-
+        console.log(e);
     }
 
 
@@ -213,23 +216,23 @@ const removeSymbol = async (removeSymbol) => {
         })
 
         if (!response.ok) {
-            //error
+            throw new Error("Endpoint exception")
         }
 
         await connection.leaveGroup(removeSymbol.name);
 
         root.removeChild(cardsById.get(removeSymbol.id));
-        
+
 
     } catch (e) {
         console.log(e);
     }
-   
+
 
 
 }
 
-
+//Create empty bubble that is responsible for adding new stocks
 const buildAddBubble = () => {
 
     const bubbleAdd = document.createElement("div");
@@ -251,6 +254,9 @@ const buildAddBubble = () => {
     return bubbleAdd;
 }
 
+
+//The same card design like in public dash but with a button for removing it from the private dash.
+//TODO: refactor
 const createCard = (symbol) => {
     const card = document.createElement("div");
     card.className = "bubble";
@@ -296,7 +302,7 @@ const createCard = (symbol) => {
     card.appendChild(grid);
 
     btn.addEventListener("click", (e) => {
-        
+
         removeSymbol(symbol);
     })
 
@@ -357,44 +363,48 @@ const handleSignalUpdate = (updates) => {
 };
 
 const loadPrivateSymbols = async () => {
+    try {
 
-    const root = document.getElementById("mainRoot");
+        const root = document.getElementById("mainRoot");
 
-    const response = await fetch("/GetSymbols", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("stockrayJWT")}`
-        },
-    })
-
-
-
-
-    if (!response.ok) {
-
-        if (response.status === 401) {
+        const response = await fetch("/GetSymbols", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("stockrayJWT")}`
+            },
+        })
 
 
-            const err = error(authMess, () => {
-                root.innerHTML = "";
-                localStorage.removeItem("stockrayJWT");
-                window.location.href = "/PublicDash/";
-            })
+        if (!response.ok) {
 
-            root.appendChild(err);
-            return;
+            if (response.status === 401) {
+
+
+                const err = error(authMess, () => {
+                    root.innerHTML = "";
+                    localStorage.removeItem("stockrayJWT");
+                    window.location.href = "/PublicDash/";
+                })
+
+                root.appendChild(err);
+                return;
+            }
+
+            //error("", () => {
+            //    root.innerHTML = "";
+            //})
+
         }
 
-        //error("", () => {
-        //    root.innerHTML = "";
-        //})
+        const data = await response.json();
 
+        return data ?? [];
+
+    } catch (e) {
+        console.log(e);
     }
 
-    const data = await response.json();
-
-    return data ?? [];
 
 }
 
@@ -410,7 +420,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     logoutBtn?.addEventListener("click", logout);
 
     connection = connect();
-    
+
     connection.connection.on("ReceiveGroupUpdate", (updates) => {
 
         if (!Array.isArray(updates)) return;

@@ -18,7 +18,7 @@ namespace StockRay.Services.RemoveSymbol
             _context = context;
         }
 
-
+        //Removing symbols from user entity
         public async Task<ServiceResult> RemoveSymbolAsync(int userId, UserSymbolInboundDto inboundDto)
         {
             var user = await _context.Users
@@ -26,6 +26,9 @@ namespace StockRay.Services.RemoveSymbol
                 .FirstOrDefaultAsync(u => u.Id == userId) 
                 ?? throw new ArgumentNullException();
 
+            //because of M:M relationship between user and symbol entities 
+            //this is needed in order to not get the identity exception since 
+            //in order the user to add a symbol it must be of Symbol();
             var symbolsToRemove = await _context.Symbols.Where(s => inboundDto.SymbolIds.Contains(s.Id)).ToListAsync();
 
 

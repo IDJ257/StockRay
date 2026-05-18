@@ -21,7 +21,7 @@ namespace StockRay.Services.PublicDashboard
         public ServiceResult<PublicDashboardDto> GivePublicDashboard()
         {
 
-            //moje tuk da se formatira s Math.Round ama za sega sh go ostavim na front-enda
+            
             var getPublicDashboardSymb = _fastAccess
                 .GetSymbols()
                 .Where(s => s.IsTopNine)

@@ -1,4 +1,8 @@
 ﻿
+
+//Error page so that it's not a blank page.
+
+//TODO: use it more
 export function error(message, onClose) {
 
 

@@ -1,4 +1,14 @@
-﻿export  function setupRegisterModal(onSuccessCallBack) {
+﻿
+
+//REFACTOR:
+
+//Here it's mostly hiding/unhiding html elements for faking a stateful modal with static files.
+
+
+
+//For those to work in every HTML we need to have declared the tags with the css selectors like
+//the "is-visible" etc.
+export function setupRegisterModal(onSuccessCallBack) {
     const registerLink = document.querySelector("[data-register-open]");
     const registerOverlay = document.getElementById("registerOverlay");
     const registerForm = document.getElementById("registerForm");
@@ -73,7 +83,7 @@
                 body: JSON.stringify(payload)
             });
 
-           
+
 
             if (!response.ok) {
                 const data = await response.json();

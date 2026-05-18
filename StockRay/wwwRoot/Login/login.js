@@ -1,4 +1,12 @@
 ﻿
+//REFACTOR:
+
+//Here it's mostly hiding/unhiding html elements for faking a stateful modal with static files.
+
+
+
+//For those to work in every HTML we need to have declared the tags with the css selectors like
+//the "is-visible" etc.
 let loginOverlay;
 let loginForm;
 let loginMessage;

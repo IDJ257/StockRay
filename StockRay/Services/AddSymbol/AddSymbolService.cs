@@ -18,7 +18,6 @@ namespace StockRay.Services.AddSymbol
         }
 
 
-        //Eventualno da se vrushta List<OutboundDto> za da moje vednaga da se pokajat promenite
         public async Task<ServiceResult<List<UserSymbolsOutboundDto>>> AddSymbolAsync(UserSymbolInboundDto inboundDto, int userId)
         {
             var user = await _context.Users
@@ -26,12 +25,13 @@ namespace StockRay.Services.AddSymbol
                 .FirstOrDefaultAsync(u => u.Id == userId) ?? throw new ArgumentNullException();
 
 
-            //Za sega sa dve querita NO, moje bi trqvba da minem na ID-centric M:M tablica kudeto
-            //prosto shte dobavqme simvoli kum useri chrez tehnite ID-ta.
+            //because of M:M relationship between user and symbol entities 
+            //this is needed in order to not get the identity exception since 
+            //in order the user to add a symbol it must be of Symbol();
             var symbols = await _context.Symbols.Where(s => inboundDto.SymbolIds.Contains(s.Id)).ToListAsync();
 
 
-            //ako hangne neshto moje da e TUKa
+            //Eventualen hang
             List<UserSymbolsOutboundDto> addedSymbols = new List<UserSymbolsOutboundDto>();
          
 

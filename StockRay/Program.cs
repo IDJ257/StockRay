@@ -40,7 +40,6 @@ namespace StockRay
 
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddAuthorization();
 
             builder.Services.AddDbContext<ApplicationDbContext>(
@@ -48,8 +47,6 @@ namespace StockRay
                 );
 
 
-
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services.AddEndpointsApiExplorer();
             
@@ -118,7 +115,6 @@ namespace StockRay
 
             builder.Services.AddQuartzHostedService(opt => { opt.WaitForJobsToComplete = true; });
 
-            //eventualen interface zaradi testing
 
 
             builder.Services.AddScoped<IOnStartUp, OnStartUp>();
@@ -133,22 +129,19 @@ namespace StockRay
             builder.Services.AddScoped<PublicDashboardService>();
             builder.Services.AddScoped<RemoveSymbolService>();
             builder.Services.AddScoped<AddSymbolService>();
-            //builder.Services.AddScoped<RemoveSymbolService>();
             builder.Services.AddScoped<GetSymbolService>();
             builder.Services.AddScoped<GetAllSymbolsService>();
 
 
 
-
-            //da se proveri dali moga da injectvam singleton v scoped i vice versa.
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 
-            //singleton service koito da loadne vsichki simboli
+     
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+    
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
@@ -156,7 +149,6 @@ namespace StockRay
 
             app.UseAuthentication();
 
-           // app.UseAuthorization();
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
