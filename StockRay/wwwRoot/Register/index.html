@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>StockRay Register</title>
+    <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+    <main class="page auth-page">
+        <section class="bubble auth-card">
+            <h1 class="auth-title">Create Account</h1>
+            <p class="auth-subtitle">Join the public dashboard experience.</p>
+
+            <form id="registerForm" class="auth-form">
+                <label class="auth-field">
+                    <span>Username</span>
+                    <input type="text" name="name" placeholder="stockray-user" required />
+                </label>
+                <label class="auth-field">
+                    <span>Email</span>
+                    <input type="email" name="email" placeholder="you@stockray.com" required />
+                </label>
+                <label class="auth-field">
+                    <span>Password</span>
+                    <input type="password" name="password" placeholder="••••••••" required />
+                </label>
+                <button class="auth-button" type="submit">Register</button>
+                <div id="authMessage" class="auth-message"></div>
+            </form>
+        </section>
+    </main>
+
+    <script src="register.js"></script>
+</body>
+</html>

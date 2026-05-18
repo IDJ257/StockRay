@@ -10,7 +10,9 @@ namespace StockRay.Other
 
         void RemoveWhenLostConnection(string connectionString);
 
-        public IReadOnlyDictionary<string, ConcurrentBag<string>> ConnectionGroups { get; }
+        void LeaveGroup(string connectionString, string group);
+
+        public IReadOnlyDictionary<string, List<string>> ConnectionGroups { get; }
 
 
 
@@ -18,31 +20,60 @@ namespace StockRay.Other
 
     public class ActiveGroup : IActiveGroup
     {
+        //Concurrent collection for thread-safety. Yes the value is not thread-safe so we hope it doesn't hang
+        private readonly ConcurrentDictionary<string, List<string>> _connectionGroups;
 
-   
-        //CONNECTION ID -> LSIT OT GROUPI
-        private readonly ConcurrentDictionary<string, ConcurrentBag<string>> _connectionGroups;
-
-        public IReadOnlyDictionary<string, ConcurrentBag<string>> ConnectionGroups { get => _connectionGroups; }
+        public IReadOnlyDictionary<string, List<string>> ConnectionGroups { get => _connectionGroups; }
 
 
         public ActiveGroup()
         {
 
-            _connectionGroups = new ConcurrentDictionary<string, ConcurrentBag<string>>();
+            _connectionGroups = new ConcurrentDictionary<string, List<string>>();
              
 
         }
 
         public void AddToGroup(string connectionId, List<string> groups)
         {
-            //Shte vidim dali shte dade error ako doide edno i sushto connectionId
-            //za da doide edno i sushto neshto ne se e terminiralo
-            //kato dade error togava sh mislim
-
-            _connectionGroups.TryAdd(connectionId, new ConcurrentBag<string>(groups));
             
 
+            if (_connectionGroups.ContainsKey(connectionId))
+            {
+                //za sega taka sh raboti
+                if(groups.Count == 1)
+                {
+                    _connectionGroups[connectionId].Add(groups[0]);
+                }
+                else
+                {
+                    foreach (var item in groups)
+                    {
+                        _connectionGroups[connectionId].Add(item);
+                    }
+                }
+              
+            }
+            else
+            {
+                _connectionGroups.TryAdd(connectionId, new List<string>(groups));
+            }
+
+               
+            
+
+        }
+
+        public void LeaveGroup(string connectionId, string group)
+        {
+            if (_connectionGroups.ContainsKey(connectionId))
+            {
+                _connectionGroups[connectionId].Remove(group);
+            }
+            else
+            {
+                throw new ArgumentException("Connection error");
+            }
         }
 
         public void RemoveWhenLostConnection(string connectionId)

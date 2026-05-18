@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using StockRay.BackGroundJobs;
 using StockRay.Models;
+using StockRay.Other;
 using StockRay.Services.AddSymbol;
+using StockRay.Services.GetAllSymbols;
 using StockRay.Services.GetSymbol;
 using StockRay.Services.Login;
 using StockRay.Services.PublicDashboard;
@@ -11,6 +13,7 @@ using StockRay.Services.Register;
 using StockRay.Services.RemoveSymbol;
 using StockRay.Shared;
 using StockRay.SignalHub;
+using System.Security.Claims;
 namespace StockRay.Endpoints
 {
 
@@ -23,12 +26,6 @@ namespace StockRay.Endpoints
         public static void MapEndpoints(this IEndpointRouteBuilder app)
         {
 
-            //var group = app.MapGroup("api/");
-
-            //group.MapPost("register", Register);
-
-            //group.MapPost("login", Login);
-
             app.MapGet("/public", GetPublicDashboard);
 
 
@@ -37,12 +34,13 @@ namespace StockRay.Endpoints
             app.MapPost("/login", Login);
 
             //id = userId
-            app.MapPost("/AddSymbol/{id}", AddSymbol).RequireAuthorization();
+            app.MapPost("/AddSymbol", AddSymbol).RequireAuthorization();
 
-            app.MapPost("/RemoveSymbol/{id}", RemoveSymbol).RequireAuthorization();
+            app.MapDelete("/RemoveSymbol", RemoveSymbol).RequireAuthorization();
 
+            app.MapGet("/GetSymbols", GetSymbols).RequireAuthorization();
 
-            app.MapGet("/GetSymbols/{id}", GetSymbols).RequireAuthorization();
+            app.MapGet("/GetAllSymbols", GetAllSymbols);
 
 
 
@@ -52,42 +50,69 @@ namespace StockRay.Endpoints
         }
 
 
+        public static IResult GetAllSymbols(
+         GetAllSymbolsService getAllSymbolsService
+
+         )
+        {
+            //tva e samo workaround. Nqq da e null sigurno, ama samo za da raboti inache nie s React-a sh opravim neshtat
+
+
+
+            var res = getAllSymbolsService.GetAllSymbols();
+            //return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest(res);
+
+            return Results.Ok(res);
+        }
 
         public static async Task<IResult> GetSymbols(
-          [FromRoute] int id,
-          GetSymbolService getSymbolService
+          GetSymbolService getSymbolService,
+          ClaimsPrincipal claims
 
           )
         {
-            var res = await getSymbolService.GetSymbolsAsync(id);
+            //tva e samo workaround. Nqq da e null sigurno, ama samo za da raboti inache nie s React-a sh opravim neshtat
+
+            var userId = claims.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null) return Results.Forbid();
+
+            var res = await getSymbolService.GetSymbolsAsync(int.Parse(userId));
             return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest(res);
 
         }
 
 
         public static async Task<IResult> RemoveSymbol(
-            [FromRoute] int id,
-            RemoveSymbolService removeSymbolService,
-            UserSymbolInboundDto userSymbolInbound
+            [FromServices]RemoveSymbolService removeSymbolService,
+            [FromBody]UserSymbolInboundDto userSymbolInbound,
+             ClaimsPrincipal claims
 
             )
         {
+            var userId = claims.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var res = await removeSymbolService.RemoveSymbolAsync(id, userSymbolInbound);
+            if (userId == null) return Results.Forbid();
 
-            return res.HasPassed ? Results.Ok() : Results.BadRequest(res);
+            var res = await removeSymbolService.RemoveSymbolAsync(int.Parse(userId), userSymbolInbound);
+
+            return res.HasPassed ? Results.NoContent() : Results.BadRequest(res);
 
         }
 
 
         public static async Task<IResult> AddSymbol(
-            [FromRoute] int id,
             AddSymbolService addSymbolService,
-            UserSymbolInboundDto userSymbolInbound
+            UserSymbolInboundDto userSymbolInbound,
+            ClaimsPrincipal claims
             )
         {
+            var userId = claims.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var res = await addSymbolService.AddSymbolAsync(userSymbolInbound, id);
+            if (userId == null) return Results.Forbid();
+
+            var res = await addSymbolService.AddSymbolAsync(userSymbolInbound, int.Parse(userId));
+
 
             return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest();
 
@@ -117,10 +142,10 @@ namespace StockRay.Endpoints
             )
         {
             //Moje bi trqq vrushtame usera
-            var res = await loginService.LoginAsync(loginDto.UserName, loginDto.Password);
-
-
-            return res.HasPassed ? Results.Ok(res.Value) : Results.BadRequest(res);
+            var res = await loginService.LoginAsync(loginDto.Email, loginDto.Password);
+            
+            
+            return res.HasPassed ? Results.Ok(new { res.Value }) : Results.BadRequest(res.Value);
         }
 
         public static IResult GetPublicDashboard(

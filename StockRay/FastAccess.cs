@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 
 namespace StockRay
 {
-    //SINGLETON
+  
 
     public interface IFastAccess
     {
@@ -11,8 +11,7 @@ namespace StockRay
         ImmutableList<SymbolDto> GetSymbols();
     }
 
-    //RAM LIST 
-    //VSICHKI ENDPOINTI NATISKAT TUK A NE SE ZANIMAVAT S DATABASE
+    //Cache list for fast access without db roundtrips
     public record SymbolDto(int Id, string Name, float Open, float High, float Low, float CurrentPrice, bool IsTopNine);
     public class FastAccess : IFastAccess
     {

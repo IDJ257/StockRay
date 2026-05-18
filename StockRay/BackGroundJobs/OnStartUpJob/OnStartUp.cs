@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 
 namespace StockRay.BackGroundJobs.OnStartUpJob
 {
-
+    //Job for populating the FastAccess list
     public interface IOnStartUp
     {
         Task BuildInitialAsync();

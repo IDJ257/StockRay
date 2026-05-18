@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Private</title>
+    <link rel="icon" href="/Assets/favstockray.jpg" />
+    <link rel="stylesheet" href="/Styles/PrivateDashStyle.css">
+    <link rel="stylesheet" href="/Styles/SideMenu.css" />
+
+</head>
+<body class="private-page">
+
+    <div class="menu-shell">
+        <div class="menu-edge" aria-hidden="true"></div>
+        <nav class="side-menu" aria-label="Main menu">
+            <a class="menu-link" href="/PublicDash/">Public  Dashboard</a>
+            <a class="menu-link" data-logout>Log out</a>
+        </nav>
+    </div>
+
+    <main id="mainRoot">
+        <div id="stocks" class="privateDash"></div>
+        <div class="indicator-arrow"></div>
+    </main>
+
+    <div class="modal-overlay hidden" id="modal">
+        <div class="modal">
+
+            <div class="modal-header">
+                <h2>Add Items</h2>
+                <p>Select items from the list</p>
+            </div>
+
+            <ul class="item-list" id="itemList">
+            </ul>
+
+            <div class="modal-footer">
+                <button class="btn btn-cancel" id="cancelBtn">Cancel</button>
+                <button class="btn btn-add" id="addBtn">Add</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@9.0.6/dist/browser/signalr.min.js"></script>
+    <script type="module" src="PrivateDash.js"></script>
+</body>
+</html>

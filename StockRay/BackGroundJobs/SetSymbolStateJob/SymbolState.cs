@@ -13,18 +13,18 @@ using System.Net.NetworkInformation;
 
 namespace StockRay.BackGroundJobs.SetSymbolStateJob
 {
+    //JOB for updating every 30 seconds the current price of ALL stocks
 
     //AKO HANGNE MOJE DA E OTTUK
     //HANG!
 
-
+    //TODO: Refactor che si e...
     public interface ISetSymbolState
     {
         Task UpdateSymbolStateAsync();
     }
 
 
-    //REFACTOR!!
     public class SetSymbolState : ISetSymbolState
     {
         private readonly ApplicationDbContext _context;
@@ -53,6 +53,7 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
 
         public async Task UpdateSymbolStateAsync()
         {
+            //getting all symbols
             var symbols = await _context.Symbols
                 .AsSplitQuery()
                 .ToListAsync();
@@ -73,6 +74,7 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
 
             await _context.SaveChangesAsync();
 
+            //ATOMIC ref swap cause it's easier than to iterate over each symobl and update each prop which could lead to hangs.
             _fastAccess.Swap(SetUpImmutableList(symbols));
 
             await SendToWebSocket();
@@ -96,6 +98,8 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
 
         }
 
+
+        //Update za vsqka grupa
         private async Task SendToWebSocket()
         {
 

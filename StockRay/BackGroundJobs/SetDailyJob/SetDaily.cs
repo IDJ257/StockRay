@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 
 namespace StockRay.BackGroundJobs.SetDailyJob
 {
-    //SCOPED
+    //Job for resetting each symbol's state.
     public class SetDaily : ISetDaily
     {
         private readonly ApplicationDbContext _context;

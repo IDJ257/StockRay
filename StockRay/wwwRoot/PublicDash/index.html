@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Public</title>
+    <link rel="icon" href="/Assets/favstockray.jpg" />
+    <link rel="stylesheet" href="/Styles/SymbolPill.css">
+    <link rel="stylesheet" href="/Styles/style.css">
+    <link rel="stylesheet" href="/Styles/SideMenu.css" />
+</head>
+<body class="public-page">
+    <div class="menu-shell">
+        <div class="menu-edge" aria-hidden="true"></div>
+        <nav class="side-menu" aria-label="Main menu">
+            <!-- <button class="menu-link" type="button">Register</button> -->
+            <a class="menu-link" href="/PrivateDash/">Private Dashboard</a>
+            <a class="menu-link" data-register-open>Register</a>
+            <a class="menu-link" data-login-open>Login</a>
+            <a class="menu-link" data-logout>Log out</a>
+        </nav>
+    </div>
+ 
+    <main class="page">
+        <section id="dashboardGrid" class="grid" aria-live="polite"></section>
+        <div class="indicator-arrow"></div>
+    </main>
+
+    <!-- Shte se polzva React za reusability dw-->
+    <div id="registerOverlay" class="modal-overlay" hidden>
+        <div class="modal-card auth-card" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
+            <button id="registerClose" class="modal-close" type="button" aria-label="Close registration">×</button>
+            <h2 id="registerTitle" class="auth-title">Create your account</h2>
+            <p class="auth-subtitle">Register to start building a private dashboard.</p>
+            <form id="registerForm" class="auth-form">
+                <label class="auth-field">
+                    Name
+                    <input name="name" type="text" autocomplete="name" placeholder="username" required />
+                </label>
+                <label class="auth-field">
+                    Email
+                    <input name="email" type="email" autocomplete="email" placeholder="email" required />
+                </label>
+                <label class="auth-field">
+                    Password
+                    <input name="password" type="password" minlength="8" autocomplete="new-password" placeholder="password" required />
+                </label>
+                <button class="auth-button" type="submit">Register</button>
+                <div id="registerMessage" class="auth-message" role="status" aria-live="polite"></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="loginOverlay" class="modal-overlay" hidden>
+        <div class="modal-card auth-card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+            <button id="loginClose" class="modal-close" type="button" aria-label="Close login">×</button>
+            <h2 id="loginTitle" class="auth-title">Welcome back</h2>
+            <p class="auth-subtitle">Log in to view your private dashboard.</p>
+            <form id="loginForm" class="auth-form">
+                <label class="auth-field">
+                    Email
+                    <input name="email" type="text" autocomplete="email" placeholder="Your email" required />
+                </label>
+                <label class="auth-field">
+                    Password
+                    <input name="password" type="password" autocomplete="current-password" placeholder="Your password" required />
+                </label>
+                <button class="auth-button" type="submit">Login</button>
+                <div id="loginMessage" class="auth-message" role="status" aria-live="polite"></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@9.0.6/dist/browser/signalr.min.js"></script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>

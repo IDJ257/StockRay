@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 
 namespace StockRay.BackGroundJobs.SetTopNineWeeklyJob
 {
-    //SCOPED
+    //Job for setting the 9 symbols that are shown on /PublicDash
     public class SetTopNineWeekly : ISetTopNineWeekly
     {
         private readonly ApplicationDbContext _context;

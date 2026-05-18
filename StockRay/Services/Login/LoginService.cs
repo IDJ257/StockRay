@@ -24,15 +24,15 @@ namespace StockRay.Services.Login
         }
 
         //tova e butaforno realno shoto nakraq shte slagam AUTH/AUTHR 
-        public async Task<ServiceResult<string>> LoginAsync(string userName, string password)
+        public async Task<ServiceResult<string>> LoginAsync(string email, string password)
         {
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName.Equals(userName));
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Email.Equals(email));
 
                 if (user == null)
                 {
-                    return new ServiceResult<string>(true);
+                    return new ServiceResult<string>(false);
 
                 }
 
