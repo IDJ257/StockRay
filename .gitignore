@@ -368,3 +368,5 @@ FodyWeavers.xsd
 /StockRay/Migrations/20260504163201_InitialMigration.cs
 /StockRay/Migrations/20260511212745_SymbolEnhancement.cs
 /StockRay/Migrations/ApplicationDbContextModelSnapshot.cs
+/StockRay/Migrations/20260504163201_InitialMigration.Designer.cs
+/StockRay/Migrations/20260511212745_SymbolEnhancement.Designer.cs
