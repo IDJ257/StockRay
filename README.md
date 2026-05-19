@@ -58,3 +58,5 @@ Will be available at https://localHost:7165
 
 > **_NOTE:_**  Quartz jobs run automatically after startup (background processing every 30 seconds and scheduled tasks).
 
+> **_NOTE:_**  Stock data is calculated in-app. There is no real stock data yet.
+
