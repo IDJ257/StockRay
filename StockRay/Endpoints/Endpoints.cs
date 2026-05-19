@@ -25,6 +25,7 @@ namespace StockRay.Endpoints
 
         public static void MapEndpoints(this IEndpointRouteBuilder app)
         {
+            app.MapGet("/", () => Results.Redirect("/PublicDash"));
 
             app.MapGet("/public", GetPublicDashboard);
 

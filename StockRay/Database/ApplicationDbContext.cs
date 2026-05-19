@@ -69,22 +69,24 @@ namespace StockRay.Database
         {
 
 
-            optionsBuilder.UseSeeding((context, _) =>
-            {
+            //optionsBuilder.UseSeeding((context, _) =>
+            //{
 
-                var sym = context.Set<Symbol>().Any();
+            //    var sym = context.Set<Symbol>().Any();
 
-                if(!sym)
-                {
+            //    if(!sym)
+            //    {
 
-                    var seed = SymbolSeed.Seed();
+            //        var seed = SymbolSeed.Seed();
 
-                    context.Set<Symbol>().AddRange(seed);
+            //        context.Set<Symbol>().AddRange(seed);
                     
-                    context.SaveChanges();
-                }
+            //        context.SaveChanges();
+            //    }
                
-            });
+            //});
+
+
         }
     }
 }

@@ -1,7 +1,9 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Quartz;
 using Quartz.Core;
 using RabbitMQ.Client.Logging;
@@ -13,18 +15,17 @@ using StockRay.BackGroundJobs.SetTopNineWeeklyJob;
 using StockRay.Database;
 using StockRay.Endpoints;
 using StockRay.Models;
+using StockRay.Other;
 using StockRay.Services.AddSymbol;
+using StockRay.Services.GetAllSymbols;
 using StockRay.Services.GetSymbol;
 using StockRay.Services.Login;
 using StockRay.Services.PublicDashboard;
 using StockRay.Services.Register;
 using StockRay.Services.RemoveSymbol;
 using StockRay.SignalHub;
-using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Text;
-using StockRay.Other;
-using Microsoft.AspNetCore.Rewrite;
-using StockRay.Services.GetAllSymbols;
 
 
 namespace StockRay
@@ -40,16 +41,28 @@ namespace StockRay
 
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddAuthorization();
 
-            builder.Services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString"))
-                );
+            var provider = builder.Configuration["DataBaseProvider"];
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                if (provider == "Sqlite")
+                {
+                    options.UseSqlite(builder.Configuration.GetConnectionString("Sqlite"));
+                }
+                else
+                {
+                    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
+                }
+
+            });
+                
+
 
 
             builder.Services.AddOpenApi();
             builder.Services.AddEndpointsApiExplorer();
-            
+
 
             builder.Services.AddAuthorization();
 
@@ -59,6 +72,7 @@ namespace StockRay
                     jwt.RequireHttpsMetadata = false;
                     jwt.TokenValidationParameters = new TokenValidationParameters
                     {
+                        //HARDCODED SYMMETRYCSECKEY Just so it runs on multiple machines 
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"])),
                         ValidIssuer = builder.Configuration["Jwt:Issuer"],
                         ValidAudience = builder.Configuration["Jwt:Audience"],
@@ -137,11 +151,30 @@ namespace StockRay
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 
-     
+
 
             var app = builder.Build();
 
-    
+            
+
+            //runva se ako sluchaino nqma DB
+            //AKo ima Db EF ne izpulnqva Migrate();
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                db.Database.Migrate();
+
+                if (!db.Symbols.Any())
+                {
+                    var seed = SymbolSeed.Seed();
+                    db.Symbols.AddRange(seed);
+                    db.SaveChanges();
+                }
+            }
+
+
+
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
@@ -158,9 +191,10 @@ namespace StockRay
 
             app.MapEndpoints();
 
-           
 
             app.MapHub<SymbolNotifHub>("/sym-notif");
+
+
 
 
             app.Run();
