@@ -38,7 +38,7 @@ public static class Endpoints
         app.MapGet("/GetAllSymbols", GetAllSymbols);
     }
 
-    private static IResult GetAntiforgeryToken(HttpContext context, IAntiforgery antiforgery)
+    private static IResult  GetAntiforgeryToken(HttpContext context, IAntiforgery antiforgery)
     {
         var tokens = antiforgery.GetAndStoreTokens(context);
         return Results.Ok(new { requestToken = tokens.RequestToken });

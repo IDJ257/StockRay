@@ -71,6 +71,8 @@ namespace StockRay
 
             builder.Services.ConfigureApplicationCookie(options =>
             {
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.SlidingExpiration = false;
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.SameSite = SameSiteMode.Lax;
@@ -169,19 +171,19 @@ namespace StockRay
 
             //runva se ako sluchaino nqma DB
             //AKo ima Db EF ne izpulnqva Migrate();
-            using (var scope = app.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-                db.Database.Migrate();
+            //    db.Database.Migrate();
 
-                if (!db.Symbols.Any())
-                {
-                    var seed = SymbolSeed.Seed();
-                    db.Symbols.AddRange(seed);
-                    db.SaveChanges();
-                }
-            }
+            //    if (!db.Symbols.Any())
+            //    {
+            //        var seed = SymbolSeed.Seed();
+            //        db.Symbols.AddRange(seed);
+            //        db.SaveChanges();
+            //    }
+            //}
 
 
 

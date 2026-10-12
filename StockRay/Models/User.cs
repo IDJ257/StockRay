@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StockRay.Models;
 
-public class User : IdentityUser<int>
+public class User : IdentityUser<int>  //Identity now manages email, password validations
 {
     [NotMapped]
     private const int MaxStockSymbols = 101;
@@ -27,10 +27,8 @@ public class User : IdentityUser<int>
         Email = email;
     }
 
-    public void ChangeEmail(string email)
-    {
-        Email = email;
-    }
+    public void ChangeEmail(string email) => Email = email;
+
 
     public bool TryAddSymbolToWatch(Symbol symbol) => _symbols.Add(symbol);
 

@@ -52,26 +52,17 @@ namespace StockRay.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.UseSeeding((context, _) =>
+            {
+                var hasSymbols = context.Set<Symbol>().Any();
 
-
-            //optionsBuilder.UseSeeding((context, _) =>
-            //{
-
-            //    var sym = context.Set<Symbol>().Any();
-
-            //    if(!sym)
-            //    {
-
-            //        var seed = SymbolSeed.Seed();
-
-            //        context.Set<Symbol>().AddRange(seed);
-                    
-            //        context.SaveChanges();
-            //    }
-               
-            //});
-
-
+                if (!hasSymbols)
+                {
+                    var seed = SymbolSeed.Seed();
+                    context.Set<Symbol>().AddRange(seed);
+                    context.SaveChanges();
+                }
+            });
         }
     }
 }

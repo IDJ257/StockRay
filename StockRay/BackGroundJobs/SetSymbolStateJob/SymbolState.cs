@@ -33,6 +33,8 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
 
         private readonly IHubContext<SymbolNotifHub, ISymbolNotifClient> _hubContext;
 
+   
+
         private readonly IActiveGroup _activeGroup;
 
 
@@ -121,6 +123,8 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
             {
                 //fast list da mi dade za AAPL, MSFT, TSM
 
+                
+
               var outBoundListForClient = fastList
                     .Where(s => item.Value.Contains(s.Name)) //NE BI TRQBVALO DA IMA READ HANG NA item.VALUE. VALUETO e OT CONCURRENTBAG TIP I READA BI TRQBVALO DA SE LOCKNE
                     .Select(es => new OutboundStockPrice(es.Id, es.Open, es.High, es.Low, es.CurrentPrice))
@@ -128,6 +132,8 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
 
 
                 await _hubContext.Clients.Client(item.Key).ReceiveGroupUpdate(outBoundListForClient);
+            
+              
             }
 
             

@@ -3,10 +3,23 @@ using StockRay.Models;
 
 namespace StockRay.Services.Identity;
 
-public sealed class IdentityAccountService(
-    UserManager<User> userManager,
-    SignInManager<User> signInManager)
+public sealed class IdentityAccountService
+
 {
+
+
+
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
+
+    public IdentityAccountService(UserManager<User> userManager, SignInManager<User> signInManager)
+    {
+        _signInManager = signInManager;
+        _userManager = userManager;
+    }
+
+
+
     public async Task<IdentityResult> RegisterAsync(string userName, string email, string password)
     {
         if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(email) || string.IsNullOrEmpty(password))
@@ -19,7 +32,7 @@ public sealed class IdentityAccountService(
         }
 
         var user = new User(userName.Trim(), email.Trim());
-        return await userManager.CreateAsync(user, password);
+        return await _userManager.CreateAsync(user, password);
     }
 
     public async Task<SignInResult> LoginAsync(string email, string password)
@@ -29,18 +42,18 @@ public sealed class IdentityAccountService(
             return SignInResult.Failed;
         }
 
-        var user = await userManager.FindByEmailAsync(email.Trim());
+        var user = await _userManager.FindByEmailAsync(email.Trim());
         if (user is null)
         {
             return SignInResult.Failed;
         }
 
-        return await signInManager.PasswordSignInAsync(
+        return await _signInManager.PasswordSignInAsync(
             user,
             password,
             isPersistent: false,
             lockoutOnFailure: true);
     }
 
-    public Task LogoutAsync() => signInManager.SignOutAsync();
+    public Task LogoutAsync() => _signInManager.SignOutAsync();
 }
