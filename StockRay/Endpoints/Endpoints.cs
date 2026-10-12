@@ -50,7 +50,7 @@ public static class Endpoints
         [FromServices] IdentityAccountService accounts,
         [FromBody] RegisterDto registerDto)
     {
-        var result = await accounts.RegisterAsync(registerDto.Name, registerDto.Email, registerDto.Password);
+        var result = await accounts.RegisterAsync(registerDto.UserName, registerDto.Email, registerDto.Password);
         if (result.Succeeded)
         {
             return Results.Ok();

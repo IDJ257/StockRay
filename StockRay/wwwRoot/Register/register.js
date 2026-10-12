@@ -66,12 +66,12 @@ export function setupRegisterModal(onSuccessCallBack) {
         event.preventDefault();
 
         const payload = {
-            Name: registerForm.elements.name.value.trim(),
+            UserName: registerForm.elements.username.value.trim(),
             Email: registerForm.elements.email.value.trim(),
             Password: registerForm.elements.password.value
         };
 
-        if (!payload.Name || !payload.Email || !payload.Password) {
+        if (!payload.UserName || !payload.Email || !payload.Password) {
             setMessage("Please complete all fields.", true);
             return;
         }

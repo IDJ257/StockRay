@@ -5,15 +5,15 @@
     
         public class RegisterDto
         {
-            public string Name { get; set; }
+            public string UserName { get; set; }
 
             public string Password { get; set; }
 
             public string Email { get; set; }
 
-            public RegisterDto(string name, string password, string email)
+            public RegisterDto(string userName, string password, string email)
             {
-                Name = name;
+                UserName = userName;
                 Password = password;
                 Email = email;
             }

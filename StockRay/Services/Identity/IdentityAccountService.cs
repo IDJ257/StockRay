@@ -7,18 +7,18 @@ public sealed class IdentityAccountService(
     UserManager<User> userManager,
     SignInManager<User> signInManager)
 {
-    public async Task<IdentityResult> RegisterAsync(string name, string email, string password)
+    public async Task<IdentityResult> RegisterAsync(string userName, string email, string password)
     {
-        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) || string.IsNullOrEmpty(password))
+        if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(email) || string.IsNullOrEmpty(password))
         {
             return IdentityResult.Failed(new IdentityError
             {
                 Code = "InvalidInput",
-                Description = "Name, email, and password are required."
+                Description = "Username, email, and password are required."
             });
         }
 
-        var user = new User(name.Trim(), email.Trim());
+        var user = new User(userName.Trim(), email.Trim());
         return await userManager.CreateAsync(user, password);
     }
 

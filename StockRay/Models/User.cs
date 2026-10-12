@@ -11,8 +11,6 @@ public class User : IdentityUser<int>
     private readonly HashSet<Subscription> _subscriptions;
     private readonly HashSet<Symbol> _symbols;
 
-    public string Name { get; private set; } = string.Empty;
-
     public IReadOnlyCollection<Subscription> Subscriptions => _subscriptions;
 
     public IReadOnlyCollection<Symbol> Symbols => _symbols;
@@ -23,21 +21,10 @@ public class User : IdentityUser<int>
         _subscriptions = new HashSet<Subscription>();
     }
 
-    public User(string name, string email) : this()
+    public User(string userName, string email) : this()
     {
-        ChangeName(name);
+        UserName = userName;
         Email = email;
-    }
-
-    public void ChangeName(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            throw new FormatException("Name is empty");
-        }
-
-        Name = name;
-        UserName = name;
     }
 
     public void ChangeEmail(string email)
