@@ -1,16 +1,16 @@
-﻿export function logout() {
-    setLoggedOut();
-    updateAuthUI();
-    window.location.href = "/PublicDash";
+import { csrfFetch } from "../Login/csrf.js";
+
+export function logout() {
+    csrfFetch("/logout", { method: "POST" })
+        .catch(() => {})
+        .finally(() => window.location.href = "/PublicDash");
 }
 
-//Remove LogOutButton if no JWT
-//TODO:improve it because JWT can expire but still sit in the localstorage.
-export function updateAuthUI() {
-    const token = localStorage.getItem("stockrayJWT");
-    document.body.classList.toggle("logged-in", !!token);
-}
-
-function setLoggedOut() {
-    localStorage.removeItem("stockrayJWT");
+export async function updateAuthUI() {
+    try {
+        const response = await fetch("/account", { credentials: "same-origin" });
+        document.body.classList.toggle("logged-in", response.ok);
+    } catch {
+        document.body.classList.remove("logged-in");
+    }
 }

@@ -1,4 +1,6 @@
-﻿
+import { csrfFetch } from "../Login/csrf.js";
+
+
 
 //REFACTOR:
 
@@ -75,7 +77,7 @@ export function setupRegisterModal(onSuccessCallBack) {
         }
 
         try {
-            const response = await fetch("/register", {
+            const response = await csrfFetch("/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -87,7 +89,8 @@ export function setupRegisterModal(onSuccessCallBack) {
 
             if (!response.ok) {
                 const data = await response.json();
-                setMessage(`${data.message}`, true);
+                const errors = data.errors ? Object.values(data.errors).flat().join(" ") : "";
+                setMessage(data.detail || data.message || errors || "Registration failed.", true);
                 return;
             }
 

@@ -1,4 +1,4 @@
-﻿
+
 //REFACTOR:
 
 //Here it's mostly hiding/unhiding html elements for faking a stateful modal with static files.
@@ -13,6 +13,7 @@ let loginMessage;
 let setMessage;
 
 import { updateAuthUI } from "../Login/logout.js";
+import { csrfFetch } from "../Login/csrf.js";
 export function openModal() {
     loginForm.reset();
     setMessage("", false);
@@ -82,7 +83,7 @@ export function setupLoginModal() {
         }
 
         try {
-            const response = await fetch("/login", {
+            const response = await csrfFetch("/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -90,17 +91,15 @@ export function setupLoginModal() {
                 body: JSON.stringify(payload)
             });
 
-            const data = await response.json();
-
             if (!response.ok) {
-                setMessage(`${data}`, true);
+                const data = await response.json().catch(() => ({}));
+                setMessage(data.detail || data.message || "Login failed. Check your email and password.", true);
                 return;
             }
 
 
 
             setMessage("Login successful.", false);
-            localStorage.setItem("stockrayJWT", data.value);
             updateAuthUI();
 
             setTimeout(() => {
