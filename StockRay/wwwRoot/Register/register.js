@@ -1,4 +1,6 @@
-﻿
+import { csrfFetch } from "../Login/csrf.js";
+
+
 
 //REFACTOR:
 
@@ -64,18 +66,18 @@ export function setupRegisterModal(onSuccessCallBack) {
         event.preventDefault();
 
         const payload = {
-            Name: registerForm.elements.name.value.trim(),
+            UserName: registerForm.elements.username.value.trim(),
             Email: registerForm.elements.email.value.trim(),
             Password: registerForm.elements.password.value
         };
 
-        if (!payload.Name || !payload.Email || !payload.Password) {
+        if (!payload.UserName || !payload.Email || !payload.Password) {
             setMessage("Please complete all fields.", true);
             return;
         }
 
         try {
-            const response = await fetch("/register", {
+            const response = await csrfFetch("/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -87,7 +89,8 @@ export function setupRegisterModal(onSuccessCallBack) {
 
             if (!response.ok) {
                 const data = await response.json();
-                setMessage(`${data.message}`, true);
+                const errors = data.errors ? Object.values(data.errors).flat().join(" ") : "";
+                setMessage(data.detail || data.message || errors || "Registration failed.", true);
                 return;
             }
 

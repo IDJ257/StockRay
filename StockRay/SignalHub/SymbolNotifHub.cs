@@ -6,11 +6,15 @@ using StockRay.Shared;
 namespace StockRay.SignalHub
 {
 
+   //SERVER - CLIENT
     public interface ISymbolNotifClient
     {
 
+        //SERVER-SIDE CALL THAT OUTBOUND DATA TO CLIENT
         Task ReceiveGroupUpdate(List<OutboundStockPrice> outBoundValues);
 
+
+        //tozi method se callva tuk i realno e kato SendAsync kudeto tuk v arugment lista sa neshtata koito se prashtata
         Task ReceivePublicUpdate(List<OutboundStockPrice> outboundStockPrices);
 
 
@@ -27,6 +31,10 @@ namespace StockRay.SignalHub
             _activeGroup = activeGroup;
         }
 
+
+
+        //METHODS CLIENT CALL ON THE SERVER
+        //CLIENT-SERVER
 
         //Method used only for joining the PUBLIC group and no other
         public async Task JoinGroup(string group)

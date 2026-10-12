@@ -1,9 +1,6 @@
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Quartz;
 using Quartz.Core;
 using RabbitMQ.Client.Logging;
@@ -19,13 +16,11 @@ using StockRay.Other;
 using StockRay.Services.AddSymbol;
 using StockRay.Services.GetAllSymbols;
 using StockRay.Services.GetSymbol;
-using StockRay.Services.Login;
+using StockRay.Services.Identity;
 using StockRay.Services.PublicDashboard;
-using StockRay.Services.Register;
 using StockRay.Services.RemoveSymbol;
 using StockRay.SignalHub;
 using System;
-using System.Text;
 
 
 namespace StockRay
@@ -64,23 +59,42 @@ namespace StockRay
             builder.Services.AddEndpointsApiExplorer();
 
 
+            builder.Services.AddIdentityApiEndpoints<User>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequiredLength = 8;
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            }).AddEntityFrameworkStores<ApplicationDbContext>();
+
             builder.Services.AddAuthorization();
 
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(jwt =>
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.SlidingExpiration = false;
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.Events.OnRedirectToLogin = context =>
                 {
-                    jwt.RequireHttpsMetadata = false;
-                    jwt.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        //HARDCODED SYMMETRYCSECKEY Just so it runs on multiple machines 
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"])),
-                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                        ValidAudience = builder.Configuration["Jwt:Audience"],
-                        ClockSkew = TimeSpan.Zero
-                    };
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                };
+                options.Events.OnRedirectToAccessDenied = context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                    return Task.CompletedTask;
+                };
+            });
 
-                });
-
+            builder.Services.AddAntiforgery(options =>
+            {
+                options.HeaderName = "X-CSRF-TOKEN";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Strict;
+            });
             builder.Services.AddSignalR(options => options.EnableDetailedErrors = true);
             builder.Services.AddQuartz(options =>
             {
@@ -137,9 +151,6 @@ namespace StockRay
             builder.Services.AddScoped<ISetDaily, SetDaily>();
             builder.Services.AddScoped<ISetTopNineWeekly, SetTopNineWeekly>();
             builder.Services.AddScoped<ISetSymbolState, SetSymbolState>();
-            builder.Services.AddSingleton<TokenProvider>();
-            builder.Services.AddScoped<RegisterService>();
-            builder.Services.AddScoped<LoginService>();
             builder.Services.AddScoped<PublicDashboardService>();
             builder.Services.AddScoped<RemoveSymbolService>();
             builder.Services.AddScoped<AddSymbolService>();
@@ -148,7 +159,8 @@ namespace StockRay
 
 
 
-            builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+            builder.Services.AddScoped<IdentityAccountService>();
+            builder.Services.AddScoped<AntiforgeryValidationFilter>();
 
 
 
@@ -159,19 +171,19 @@ namespace StockRay
 
             //runva se ako sluchaino nqma DB
             //AKo ima Db EF ne izpulnqva Migrate();
-            using (var scope = app.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-                db.Database.Migrate();
+            //    db.Database.Migrate();
 
-                if (!db.Symbols.Any())
-                {
-                    var seed = SymbolSeed.Seed();
-                    db.Symbols.AddRange(seed);
-                    db.SaveChanges();
-                }
-            }
+            //    if (!db.Symbols.Any())
+            //    {
+            //        var seed = SymbolSeed.Seed();
+            //        db.Symbols.AddRange(seed);
+            //        db.SaveChanges();
+            //    }
+            //}
 
 
 
@@ -180,13 +192,12 @@ namespace StockRay
                 app.MapOpenApi();
             }
 
-            app.UseAuthentication();
-
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapEndpoints();

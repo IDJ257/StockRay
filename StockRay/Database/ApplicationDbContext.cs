@@ -1,17 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using StockRay.Models;
 using StockRay.Other;
 
 namespace StockRay.Database
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
-        public ApplicationDbContext(DbContextOptions options): base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-
         }
-
-        public DbSet<User> Users { get; set; }
 
         public DbSet<Symbol> Symbols { get; set; }
 
@@ -21,72 +20,49 @@ namespace StockRay.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .HasKey(u => u.Id);
+            base.OnModelCreating(modelBuilder);
 
-
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Symbols)
-                .WithMany(s => s.Users);
+            modelBuilder.Entity<User>().ToTable("Users");
 
             modelBuilder.Entity<User>()
-                .HasMany(u => u.Subscriptions)
-                .WithOne(s => s.User);
+                .HasMany(user => user.Symbols)
+                .WithMany(symbol => symbol.Users);
 
             modelBuilder.Entity<User>()
-                .HasIndex(u => new { u.Email, u.UserName })
-                .IsUnique();
+                .HasMany(user => user.Subscriptions)
+                .WithOne(subscription => subscription.User);
 
             modelBuilder.Entity<Symbol>()
-                .HasKey(s => s.Id);
+                .HasKey(symbol => symbol.Id);
 
             modelBuilder.Entity<Symbol>()
-                .HasMany(s => s.SnapShots)
-                .WithOne(sn => sn.Symbol);
-
+                .HasMany(symbol => symbol.SnapShots)
+                .WithOne(snapshot => snapshot.Symbol);
 
             modelBuilder.Entity<Subscription>()
-                .HasKey(sp => sp.Id);
+                .HasKey(subscription => subscription.Id);
 
             modelBuilder.Entity<Snapshot>()
-                .HasKey(sn => sn.Id);
+                .HasKey(snapshot => snapshot.Id);
 
             modelBuilder.Entity<Snapshot>()
-                .HasIndex(sn => new {sn.SymbolId, sn.SnapDate})
+                .HasIndex(snapshot => new { snapshot.SymbolId, snapshot.SnapDate })
                 .IsUnique();
-
-
-
-            
-                
-            
-                
-            
-          
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.UseSeeding((context, _) =>
+            {
+                var hasSymbols = context.Set<Symbol>().Any();
 
-
-            //optionsBuilder.UseSeeding((context, _) =>
-            //{
-
-            //    var sym = context.Set<Symbol>().Any();
-
-            //    if(!sym)
-            //    {
-
-            //        var seed = SymbolSeed.Seed();
-
-            //        context.Set<Symbol>().AddRange(seed);
-                    
-            //        context.SaveChanges();
-            //    }
-               
-            //});
-
-
+                if (!hasSymbols)
+                {
+                    var seed = SymbolSeed.Seed();
+                    context.Set<Symbol>().AddRange(seed);
+                    context.SaveChanges();
+                }
+            });
         }
     }
 }

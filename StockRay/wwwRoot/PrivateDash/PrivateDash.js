@@ -1,8 +1,9 @@
-﻿//OTVRAT
+//OTVRAT
 
 import { error } from "./PrivateDashError.js"
 import { connect } from "../SignalRClient/SignalRConnect.js"
 import { logout, updateAuthUI } from "../Login/logout.js";
+import { csrfFetch } from "../Login/csrf.js";
 let connection;
 const symbolsById = new Map();
 const cardsById = new Map();
@@ -127,11 +128,10 @@ const addSymbols = async () => {
     const root = document.getElementById("stocks");
 
     try {
-        const response = await fetch("/AddSymbol", {
+        const response = await csrfFetch("/AddSymbol", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem("stockrayJWT")}`
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 symbolIds: [...selectedForAdd]
@@ -146,7 +146,6 @@ const addSymbols = async () => {
 
                 const err = error(authMess, () => {
                     root.innerHTML = "";
-                    localStorage.removeItem("stockrayJWT");
                     window.location.href = "/PublicDash/";
                 })
 
@@ -204,11 +203,10 @@ const removeSymbol = async (removeSymbol) => {
 
     try {
 
-        const response = await fetch("/RemoveSymbol", {
+        const response = await csrfFetch("/RemoveSymbol", {
             method: "DELETE",
             headers: {
-                "Content-type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem("stockrayJWT")}`
+                "Content-type": "application/json"
             },
             body: JSON.stringify({
                 symbolIds: [removeSymbol.id]
@@ -369,10 +367,7 @@ const loadPrivateSymbols = async () => {
 
         const response = await fetch("/GetSymbols", {
             method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem("stockrayJWT")}`
-            },
+            credentials: "same-origin"
         })
 
 
@@ -383,7 +378,6 @@ const loadPrivateSymbols = async () => {
 
                 const err = error(authMess, () => {
                     root.innerHTML = "";
-                    localStorage.removeItem("stockrayJWT");
                     window.location.href = "/PublicDash/";
                 })
 
