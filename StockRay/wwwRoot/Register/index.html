@@ -1,36 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>StockRay Register</title>
-    <link rel="stylesheet" href="/style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Public</title>
+  <link rel="icon" href="/Assets/favstockray.jpg" />
+  <link rel="stylesheet" data-style="pill" href="/Styles/SymbolPill.css" media="not all" />
+  <link rel="stylesheet" data-style="public" href="/Styles/style.css" media="not all" />
+  <link rel="stylesheet" data-style="private" href="/Styles/PrivateDashStyle.css" media="not all" />
+  <link rel="stylesheet" href="/Styles/SideMenu.css" />
+  <script type="module" crossorigin src="/spa/assets/index-WPR8MoNp.js"></script>
 </head>
 <body>
-    <main class="page auth-page">
-        <section class="bubble auth-card">
-            <h1 class="auth-title">Create Account</h1>
-            <p class="auth-subtitle">Join the public dashboard experience.</p>
-
-            <form id="registerForm" class="auth-form">
-                <label class="auth-field">
-                    <span>Username</span>
-                    <input type="text" name="username" autocomplete="username" placeholder="stockray-user" required />
-                </label>
-                <label class="auth-field">
-                    <span>Email</span>
-                    <input type="email" name="email" placeholder="you@stockray.com" required />
-                </label>
-                <label class="auth-field">
-                    <span>Password</span>
-                    <input type="password" name="password" placeholder="••••••••" required />
-                </label>
-                <button class="auth-button" type="submit">Register</button>
-                <div id="authMessage" class="auth-message"></div>
-            </form>
-        </section>
-    </main>
-
-    <script src="register.js"></script>
+  <div id="root" style="display: contents"></div>
 </body>
 </html>

@@ -30,6 +30,11 @@ Optional:
 
 # Installation
 
+The frontend now uses React and TypeScript. Before running or publishing the
+ASP.NET app, build it from `client` with `npm.cmd install` followed by
+`npm.cmd run build`. See [client/README.md](client/README.md) for the build
+workflow, preserved routes, SignalR lifecycle, and manual verification checklist.
+
 ## Using git Clone and CLI tools(.NET9, EntityFramework CLI)
 ```bash
 git clone <https://github.com/IDJ257/StockRay.git>
