@@ -27,34 +27,18 @@ namespace StockRay.BackGroundJobs.SetTopNineWeeklyJob
             var symbols = await _context.Symbols.ToListAsync();
 
             if (symbols == null || symbols.Count == 0)
-            { 
-          
+            {
+
                 throw new ArgumentNullException(nameof(symbols));
             }
 
 
-        
-            
+            symbols.ForEach(s => s.DeSetTopNine());
 
-                symbols.ForEach(s => s.DeSetTopNine());
+            //Po-lesno e da se raboti vurhu kolekciqta i da callne DeSet na vseki element otkolkoto da mi vrushta spisuk s tezi koito sa TRUE
+            //i da im natiska DESET i taka sh imam samo 
 
-                //Po-lesno e da se raboti vurhu kolekciqta i da callne DeSet na vseki element otkolkoto da mi vrushta spisuk s tezi koito sa TRUE
-                //i da im natiska DESET i taka sh imam samo 
-
-
-                //POPRINCIP RANDOM E SAMO ZA PURVI BUILD IMA IDEQ KAK DA SE IZCHISLQVAT PO INTERESNO TOP 9
-                Random rnd = new Random();
-
-
-                for (int i = 0; i < LEN; i++)
-                {
-                    int id = rnd.Next(0, symbols.Count);
-
-                    symbols[id].SetTopNine();
-                }
-
-
-            
+            symbols.OrderByDescending(s => s.High).Take(LEN).ToList().ForEach(s => s.SetTopNine());
 
             await _context.SaveChangesAsync();
 
