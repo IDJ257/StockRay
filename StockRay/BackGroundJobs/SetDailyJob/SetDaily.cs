@@ -12,13 +12,17 @@ namespace StockRay.BackGroundJobs.SetDailyJob
 
         private readonly IFastAccess _fastAccess;
 
+        private readonly JobCompletionRecords _completionRecords;
+
         public SetDaily(
-            ApplicationDbContext context, IFastAccess fastAccess)
+            ApplicationDbContext context, IFastAccess fastAccess,
+            JobCompletionRecords completionRecords)
         {
             _context = context;
             _fastAccess = fastAccess;
+            _completionRecords = completionRecords;
         }
-        public async Task SetDailyAsync()
+        public async Task SetDailyAsync(DateTime scheduledTimeUtc)
         {
             List<Symbol> symbols = await _context.Symbols.ToListAsync();
 
@@ -53,6 +57,9 @@ namespace StockRay.BackGroundJobs.SetDailyJob
 
 
             //moje da se hvurli exception sushto i toi moje da se hvane poneje e implicit tranzakciq da rollbacknem.
+            await _completionRecords.RecordAsync(JobSchedule.DailyResetName, scheduledTimeUtc);
+
+            // EF saves the symbol changes and completion row in one transaction.
             await _context.SaveChangesAsync();
 
 
@@ -77,6 +84,6 @@ namespace StockRay.BackGroundJobs.SetDailyJob
 
     public interface ISetDaily
     {
-        Task SetDailyAsync();
+        Task SetDailyAsync(DateTime scheduledTimeUtc);
     }
 }

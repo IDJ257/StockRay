@@ -12,16 +12,20 @@ namespace StockRay.BackGroundJobs.SetTopNineWeeklyJob
 
         private readonly IFastAccess _fastAccess;
 
+        private readonly JobCompletionRecords _completionRecords;
+
         private const int LEN = 9;
 
         public SetTopNineWeekly(
-            ApplicationDbContext context, IFastAccess fastAccess)
+            ApplicationDbContext context, IFastAccess fastAccess,
+            JobCompletionRecords completionRecords)
         {
             _context = context;
             _fastAccess = fastAccess;
+            _completionRecords = completionRecords;
         }
 
-        public async Task SetTopNineAsync()
+        public async Task SetTopNineAsync(DateTime scheduledTimeUtc)
         {
             //0 - 99 indexa counta e 100
             var symbols = await _context.Symbols.ToListAsync();
@@ -40,6 +44,9 @@ namespace StockRay.BackGroundJobs.SetTopNineWeeklyJob
 
             symbols.OrderByDescending(s => s.High).Take(LEN).ToList().ForEach(s => s.SetTopNine());
 
+            await _completionRecords.RecordAsync(JobSchedule.WeeklyTopNineName, scheduledTimeUtc);
+
+            // EF saves the selection and completion row in one transaction.
             await _context.SaveChangesAsync();
 
             _fastAccess.Swap(SetUpImmutableList(symbols));
@@ -60,6 +67,6 @@ namespace StockRay.BackGroundJobs.SetTopNineWeeklyJob
 
     public interface ISetTopNineWeekly
     {
-        Task SetTopNineAsync();
+        Task SetTopNineAsync(DateTime scheduledTimeUtc);
     }
 }

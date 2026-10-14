@@ -10,26 +10,27 @@ namespace StockRay.BackGroundJobs.SetDailyJob
     {
         //NA VSEKI 24H
 
-        private readonly ISetDaily _setDaily;
+        private readonly IScheduledJobs _scheduledJobs;
+        private readonly ILogger<SetDailyJob> _logger;
 
-        public SetDailyJob(ISetDaily setDaily)
+        public SetDailyJob(IScheduledJobs scheduledJobs, ILogger<SetDailyJob> logger)
         {
-            _setDaily = setDaily;
+            _scheduledJobs = scheduledJobs;
+            _logger = logger;
 
         }
         public async Task Execute(IJobExecutionContext context)
         {
             try
             {
-                await _setDaily.SetDailyAsync();
+                await _scheduledJobs.RunDueAsync(context.CancellationToken);
 
 
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                //moje da se logva exceptiona 
-                // za sega ne ni dreme tui kato moje da failne samo DB-to nishto drugo 
-                throw new JobExecutionException(false);
+                _logger.LogError(exception, "Daily schedule check failed. Completion remains due for recovery.");
+                throw new JobExecutionException(exception, false);
             }
         
 
