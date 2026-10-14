@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Caching.Memory;
 using Quartz;
+using StockRay.BackGroundJobs.ControlledExecutionOfJobs;
 
 namespace StockRay.BackGroundJobs.SetTopNineWeeklyJob
 {
@@ -22,7 +23,7 @@ namespace StockRay.BackGroundJobs.SetTopNineWeeklyJob
 
             try
             {
-                await _scheduledJobs.RunDueAsync(context.CancellationToken);
+                await _scheduledJobs.RunScheduledJobsAsync(context.CancellationToken);
 
             }
             catch (Exception exception)

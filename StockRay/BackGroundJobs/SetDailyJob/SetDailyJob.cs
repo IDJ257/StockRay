@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Caching.Memory;
 using Quartz;
+using StockRay.BackGroundJobs.ControlledExecutionOfJobs;
 using System.Runtime.Serialization.Formatters;
 
 namespace StockRay.BackGroundJobs.SetDailyJob
@@ -23,7 +24,7 @@ namespace StockRay.BackGroundJobs.SetDailyJob
         {
             try
             {
-                await _scheduledJobs.RunDueAsync(context.CancellationToken);
+                await _scheduledJobs.RunScheduledJobsAsync(context.CancellationToken);
 
 
             }

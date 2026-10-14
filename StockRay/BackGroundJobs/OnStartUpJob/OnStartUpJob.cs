@@ -1,4 +1,5 @@
 using Quartz;
+using StockRay.BackGroundJobs.ControlledExecutionOfJobs;
 
 namespace StockRay.BackGroundJobs.OnStartUpJob
 {

@@ -1,4 +1,4 @@
-namespace StockRay.BackGroundJobs
+namespace StockRay.BackGroundJobs.ControlledExecutionOfJobs
 {
     public class JobSchedule
     {
@@ -25,6 +25,8 @@ namespace StockRay.BackGroundJobs
             return TimeZoneInfo.ConvertTimeToUtc(scheduledTime, TimeZone);
         }
 
+
+        //Vzimame VMOMENTNOTO UTC vreme i vrushtame v kolko chasa DNES e trqbvalo da mine weekly job.
         public DateTime GetLatestWeeklyTimeUtc(DateTimeOffset now)
         {
             DateTime localTime = TimeZoneInfo.ConvertTime(now, TimeZone).DateTime;

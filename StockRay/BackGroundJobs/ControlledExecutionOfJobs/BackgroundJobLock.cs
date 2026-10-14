@@ -1,4 +1,4 @@
-namespace StockRay.BackGroundJobs
+namespace StockRay.BackGroundJobs.ControlledExecutionOfJobs
 {
     // All symbol jobs share this lock within this server process.
     public class BackgroundJobLock : IDisposable
