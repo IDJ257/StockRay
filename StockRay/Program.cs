@@ -5,6 +5,7 @@ using Quartz;
 using Quartz.Core;
 using RabbitMQ.Client.Logging;
 using StockRay.BackGroundJobs;
+using StockRay.BackGroundJobs.ControlledExecutionOfJobs;
 using StockRay.BackGroundJobs.OnStartUpJob;
 using StockRay.BackGroundJobs.SetDailyJob;
 using StockRay.BackGroundJobs.SetSymbolStateJob;
@@ -96,6 +97,21 @@ namespace StockRay
                 options.Cookie.SameSite = SameSiteMode.Strict;
             });
             builder.Services.AddSignalR(options => options.EnableDetailedErrors = true);
+
+            string? scheduleTimeZoneId = builder.Configuration["BackgroundJobs:TimeZone"];
+            TimeZoneInfo scheduleTimeZone = TimeZoneInfo.Local;
+
+            if (!string.IsNullOrWhiteSpace(scheduleTimeZoneId))
+            {
+                scheduleTimeZone = TimeZoneInfo.FindSystemTimeZoneById(scheduleTimeZoneId);
+            }
+
+            builder.Services.AddSingleton(new JobSchedule(scheduleTimeZone));
+            builder.Services.AddSingleton<BackgroundJobLock>();
+            builder.Services.AddSingleton<JobExecutionState>();
+            builder.Services.AddScoped<JobCompletionRecords>();
+            builder.Services.AddScoped<IScheduledJobs, ScheduledJobs>();
+
             builder.Services.AddQuartz(options =>
             {
 
@@ -104,7 +120,8 @@ namespace StockRay
                 options.AddJob<SetDailyJob>(dailyJobKey)
                 .AddTrigger(
                     tr => tr.ForJob(dailyJobKey)
-                    .WithCronSchedule(CronScheduleBuilder.DailyAtHourAndMinute(6, 0)));
+                    .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(6, 0)
+                        .InTimeZone(scheduleTimeZone)));
 
 
 
@@ -116,6 +133,7 @@ namespace StockRay
                     tr => tr.ForJob(topNinejobKey)
                     .WithSchedule(
                         CronScheduleBuilder.WeeklyOnDayAndHourAndMinute(DayOfWeek.Sunday, 6, 0)
+                            .InTimeZone(scheduleTimeZone)
 
 
                     ));

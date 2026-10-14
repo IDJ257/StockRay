@@ -18,9 +18,18 @@ namespace StockRay.Database
 
         public DbSet<Snapshot> Snapshots { get; set; }
 
+        public DbSet<JobCompletion> JobCompletions { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<JobCompletion>()
+                .HasKey(completion => completion.JobName);
+
+            modelBuilder.Entity<JobCompletion>()
+                .Property(completion => completion.JobName)
+                .HasMaxLength(50);
 
             modelBuilder.Entity<User>().ToTable("Users");
 

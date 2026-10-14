@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Caching.Memory;
 using Quartz;
+using StockRay.BackGroundJobs.ControlledExecutionOfJobs;
 
 namespace StockRay.BackGroundJobs.SetTopNineWeeklyJob
 {
@@ -7,11 +8,13 @@ namespace StockRay.BackGroundJobs.SetTopNineWeeklyJob
 
     public class SetTopNineWeeklyJob : IJob
     {
-        private readonly ISetTopNineWeekly _setTopNineWeekly;
+        private readonly IScheduledJobs _scheduledJobs;
+        private readonly ILogger<SetTopNineWeeklyJob> _logger;
 
-        public SetTopNineWeeklyJob(ISetTopNineWeekly setTopNineWeekly)
+        public SetTopNineWeeklyJob(IScheduledJobs scheduledJobs, ILogger<SetTopNineWeeklyJob> logger)
         {
-            _setTopNineWeekly = setTopNineWeekly;
+            _scheduledJobs = scheduledJobs;
+            _logger = logger;
 
         }
 
@@ -20,12 +23,13 @@ namespace StockRay.BackGroundJobs.SetTopNineWeeklyJob
 
             try
             {
-                await _setTopNineWeekly.SetTopNineAsync();
+                await _scheduledJobs.RunScheduledJobsAsync(context.CancellationToken);
 
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                throw new JobExecutionException(false);
+                _logger.LogError(exception, "Weekly schedule check failed. Completion remains due for recovery.");
+                throw new JobExecutionException(exception, false);
             }
           
         }

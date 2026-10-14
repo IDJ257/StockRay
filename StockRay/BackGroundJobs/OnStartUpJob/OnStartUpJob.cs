@@ -1,27 +1,31 @@
 using Quartz;
+using StockRay.BackGroundJobs.ControlledExecutionOfJobs;
 
 namespace StockRay.BackGroundJobs.OnStartUpJob
 {
     [DisallowConcurrentExecution]
     public class OnStartUpJob : IJob
     {
-        private readonly IOnStartUp _onStartUp;
+        private readonly IScheduledJobs _scheduledJobs;
+        private readonly ILogger<OnStartUpJob> _logger;
 
-        public OnStartUpJob(IOnStartUp onStartUp)
+        public OnStartUpJob(IScheduledJobs scheduledJobs, ILogger<OnStartUpJob> logger)
         {
-            _onStartUp = onStartUp;
+            _scheduledJobs = scheduledJobs;
+            _logger = logger;
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
             try
             {
-                await _onStartUp.BuildInitialAsync();
+                await _scheduledJobs.InitializeAsync(context.CancellationToken);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
 
-                throw new JobExecutionException();
+                _logger.LogError(exception, "Startup recovery failed. Uncompleted jobs will be checked again by the price job.");
+                throw new JobExecutionException(exception, false);
             }
         }
     }

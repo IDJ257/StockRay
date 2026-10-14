@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using StockRay.BackGroundJobs.ControlledExecutionOfJobs;
 using StockRay.Database;
 using StockRay.Models;
 using System.Collections.Immutable;
@@ -12,50 +13,41 @@ namespace StockRay.BackGroundJobs.SetTopNineWeeklyJob
 
         private readonly IFastAccess _fastAccess;
 
+        private readonly JobCompletionRecords _completionRecords;
+
         private const int LEN = 9;
 
         public SetTopNineWeekly(
-            ApplicationDbContext context, IFastAccess fastAccess)
+            ApplicationDbContext context, IFastAccess fastAccess,
+            JobCompletionRecords completionRecords)
         {
             _context = context;
             _fastAccess = fastAccess;
+            _completionRecords = completionRecords;
         }
 
-        public async Task SetTopNineAsync()
+        public async Task SetTopNineAsync(DateTime scheduledTimeUtc)
         {
             //0 - 99 indexa counta e 100
             var symbols = await _context.Symbols.ToListAsync();
 
             if (symbols == null || symbols.Count == 0)
-            { 
-          
+            {
+
                 throw new ArgumentNullException(nameof(symbols));
             }
 
 
-        
-            
+            symbols.ForEach(s => s.DeSetTopNine());
 
-                symbols.ForEach(s => s.DeSetTopNine());
+            //Po-lesno e da se raboti vurhu kolekciqta i da callne DeSet na vseki element otkolkoto da mi vrushta spisuk s tezi koito sa TRUE
+            //i da im natiska DESET i taka sh imam samo 
 
-                //Po-lesno e da se raboti vurhu kolekciqta i da callne DeSet na vseki element otkolkoto da mi vrushta spisuk s tezi koito sa TRUE
-                //i da im natiska DESET i taka sh imam samo 
+            symbols.OrderByDescending(s => s.High).Take(LEN).ToList().ForEach(s => s.SetTopNine());
 
+            await _completionRecords.RecordAsync(JobSchedule.WeeklyTopNineName, scheduledTimeUtc);
 
-                //POPRINCIP RANDOM E SAMO ZA PURVI BUILD IMA IDEQ KAK DA SE IZCHISLQVAT PO INTERESNO TOP 9
-                Random rnd = new Random();
-
-
-                for (int i = 0; i < LEN; i++)
-                {
-                    int id = rnd.Next(0, symbols.Count);
-
-                    symbols[id].SetTopNine();
-                }
-
-
-            
-
+            // EF saves the selection and completion row in one transaction.
             await _context.SaveChangesAsync();
 
             _fastAccess.Swap(SetUpImmutableList(symbols));
@@ -76,6 +68,6 @@ namespace StockRay.BackGroundJobs.SetTopNineWeeklyJob
 
     public interface ISetTopNineWeekly
     {
-        Task SetTopNineAsync();
+        Task SetTopNineAsync(DateTime scheduledTimeUtc);
     }
 }

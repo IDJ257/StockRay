@@ -1,4 +1,5 @@
 using Quartz;
+using StockRay.BackGroundJobs.ControlledExecutionOfJobs;
 
 namespace StockRay.BackGroundJobs.SetSymbolStateJob
 {
@@ -7,12 +8,14 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
     public class SetSymbolStateJob : IJob
     {
 
-        private readonly ISetSymbolState _setSymbolState;
+        private readonly IScheduledJobs _scheduledJobs;
+        private readonly ILogger<SetSymbolStateJob> _logger;
 
 
-        public SetSymbolStateJob(ISetSymbolState setSymbolState)
+        public SetSymbolStateJob(IScheduledJobs scheduledJobs, ILogger<SetSymbolStateJob> logger)
         {
-            _setSymbolState = setSymbolState;
+            _scheduledJobs = scheduledJobs;
+            _logger = logger;
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -20,12 +23,13 @@ namespace StockRay.BackGroundJobs.SetSymbolStateJob
 
             try
             {
-                await _setSymbolState.UpdateSymbolStateAsync();
+                await _scheduledJobs.UpdatePricesAsync(context.CancellationToken);
             }
             catch (Exception ex)
             {
 
-                throw new JobExecutionException(ex,false);
+                _logger.LogError(ex, "Price update or schedule recovery failed. Another attempt is scheduled in 30 seconds.");
+                throw new JobExecutionException(ex, false);
             }
 
         }

@@ -155,6 +155,20 @@ namespace StockRay.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("StockRay.Models.JobCompletion", b =>
+                {
+                    b.Property<string>("JobName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("LastCompletedScheduledTimeUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("JobName");
+
+                    b.ToTable("JobCompletions");
+                });
+
             modelBuilder.Entity("StockRay.Models.Snapshot", b =>
                 {
                     b.Property<int>("Id")
