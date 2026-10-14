@@ -99,8 +99,7 @@ namespace StockRay.BackGroundJobs
             DateTime dailyTimeUtc = _schedule.GetLatestDailyTimeUtc(now);
 
             // Top9 must use the existing highs before the daily reset clears them.
-            bool weeklyIsDue = await _completionRecords.IsDueAsync(
-                JobSchedule.WeeklyTopNineName, weeklyTimeUtc);
+            bool weeklyIsDue = await _completionRecords.IsWeeklyDueAsync(weeklyTimeUtc);
 
             if (weeklyIsDue)
             {
@@ -109,8 +108,7 @@ namespace StockRay.BackGroundJobs
                 _logger.LogInformation("Completed Top9 for {ScheduledTimeUtc}.", weeklyTimeUtc);
             }
 
-            bool dailyIsDue = await _completionRecords.IsDueAsync(
-                JobSchedule.DailyResetName, dailyTimeUtc);
+            bool dailyIsDue = await _completionRecords.IsDailyDueAsync(dailyTimeUtc);
 
             if (dailyIsDue)
             {
