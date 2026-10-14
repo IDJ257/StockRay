@@ -35,6 +35,11 @@ ASP.NET app, build it from `client` with `npm.cmd install` followed by
 `npm.cmd run build`. See [client/README.md](client/README.md) for the build
 workflow, preserved routes, SignalR lifecycle, and manual verification checklist.
 
+Frontend source lives entirely in `client/`: React and TypeScript in `client/src/`,
+CSS in `client/public/spa/Styles/`, and images in `client/public/spa/images/`.
+The frontend build deploys generated HTML and assets to `StockRay/wwwRoot/`
+for ASP.NET to serve. Edit frontend files in `client/` and rebuild.
+
 ## Using git Clone and CLI tools(.NET9, EntityFramework CLI)
 ```bash
 git clone <https://github.com/IDJ257/StockRay.git>

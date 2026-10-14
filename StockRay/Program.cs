@@ -205,6 +205,13 @@ namespace StockRay
 
             app.MapHub<SymbolNotifHub>("/sym-notif");
 
+            // Only frontend routes fall back to the shared React entry point.
+            // Unknown API URLs and missing assets must still return errors.
+            foreach (var page in new[] { "PublicDash", "PrivateDash", "Login", "Register" })
+            {
+                app.MapFallbackToFile($"/{page}/{{*path:nonfile}}", "index.html");
+            }
+
 
 
 

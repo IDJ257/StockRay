@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import basicSsl from '@vitejs/plugin-basic-ssl';
 
 const target = process.env.STOCKRAY_BACKEND_URL || 'https://localhost:7165';
-const paths = ['/public', '/account', '/antiforgery', '/register', '/login', '/logout', '/AddSymbol', '/RemoveSymbol', '/GetSymbols', '/GetAllSymbols', '/sym-notif', '/Styles', '/Assets'];
+const paths = ['/public', '/account', '/antiforgery', '/register', '/login', '/logout', '/AddSymbol', '/RemoveSymbol', '/GetSymbols', '/GetAllSymbols', '/sym-notif'];
 
 export default defineConfig({
   plugins: [react(), basicSsl()],

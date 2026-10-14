@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile, cp, access } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, cp, access, unlink } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -12,11 +12,18 @@ for (const entry of entries) {
   const destination = path.join(webRoot, entry, 'index.html');
   const saved = path.join(backup, `${entry}.html`);
   try { await access(saved); }
-  catch { await cp(destination, saved); }
+  catch {
+    try { await cp(destination, saved); }
+    catch (error) { if (error.code !== 'ENOENT') throw error; }
+  }
 }
+// Deploy the bundles, styles, and images produced by Vite from client sources.
 // Keep hashed bundles from previous builds for tabs already running the SPA.
 await cp(path.join(client, 'dist/spa'), path.join(webRoot, 'spa'), { recursive: true });
+await writeFile(path.join(webRoot, 'index.html'), html);
+// ASP.NET serves the shared entry for frontend routes, including direct visits.
 for (const entry of entries) {
-  await writeFile(path.join(webRoot, entry, 'index.html'), html);
+  try { await unlink(path.join(webRoot, entry, 'index.html')); }
+  catch (error) { if (error.code !== 'ENOENT') throw error; }
 }
-console.log('Deployed the shared SPA to the four existing static entry paths.');
+console.log('Deployed the SPA to the shared wwwRoot/index.html entry.');
