@@ -29,58 +29,150 @@ body.logged-in [data-logout] {
 
 
 
-.error-blimp {
-    justify-self:center;
-    width: min(900px, 92vw);
-    min-height: 220px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 999px;
-    padding: 32px 48px;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: white;
-    gap: 24px;
+.error-page,
+.error-notice {
+    box-sizing: border-box;
+    width: min(1200px, calc(100% - 112px));
+    margin: 0 auto;
 }
 
-.error-text {
+.error-page {
+    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    max-width: 70%;
+}
+
+.error-masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 26px 0;
+    border-bottom: 1px solid rgba(242, 245, 248, 0.12);
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.error-masthead span,
+.error-footer {
+    color: rgba(242, 245, 248, 0.6);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.4px;
+}
+
+.error-blimp {
+    box-sizing: border-box;
+    width: min(720px, 100%);
+    margin: 56px auto;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 28px;
+    padding: 36px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    color: #F2F5F8;
+}
+
+.error-context {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 26px;
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    color: rgba(242, 245, 248, 0.65);
+}
+
+.error-mark {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    border: 1px solid rgba(242, 245, 248, 0.2);
+    background: rgba(47, 93, 140, 0.45);
+    color: #F2F5F8;
+    font-size: 20px;
 }
 
 .error-title {
-    font-size: 24px;
+    margin: 0;
+    font-size: clamp(26px, 4vw, 36px);
     font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.7px;
 }
 
 .error-message {
-    font-size: 15px;
-    opacity: 0.85;
-    line-height: 1.4;
+    margin: 16px 0 0;
+    font-size: 14px;
+    color: rgba(242, 245, 248, 0.75);
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+    white-space: pre-line;
+}
+
+.error-actions {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(242, 245, 248, 0.12);
+}
+
+.error-actions p {
+    margin: 0 0 18px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: rgba(242, 245, 248, 0.6);
 }
 
 .error-close-btn {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: white;
-    padding: 14px 26px;
-    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    background: rgba(47, 93, 140, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #F2F5F8;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font: inherit;
+    font-size: 14px;
     cursor: pointer;
     font-weight: 500;
-    transition: all 0.2s ease;
-    white-space: nowrap;
+    text-align: left;
+    transition: background 0.2s ease;
 }
 
-    .error-close-btn:hover {
-        background: rgba(255, 255, 255, 0.25);
-        transform: translateY(-2px);
-    }
+.error-close-btn:hover { background: #2F5D8C; }
+.error-close-btn:focus-visible { outline: 2px solid #F2F5F8; outline-offset: 3px; }
+.error-footer {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin-top: auto;
+    padding: 20px 0 28px;
+    border-top: 1px solid rgba(242, 245, 248, 0.12);
+    line-height: 1.6;
+}
+.error-notice .error-blimp { margin: 24px auto 40px; }
+.error-notice .error-title { font-size: 24px; }
+
+@media (max-width: 620px) {
+    .error-page, .error-notice { width: calc(100% - 64px); margin-left: 44px; margin-right: 20px; }
+    .error-masthead { font-size: 19px; padding: 22px 0; }
+    .error-masthead span { font-size: 11px; }
+    .error-blimp { padding: 24px; margin: 32px auto; border-radius: 24px; }
+    .error-close-btn { width: 100%; gap: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .error-close-btn { transition: none; }
+}
 
 /*Ujasen code duplication shte go opravqm prosto neka da raboti neshto*/
 

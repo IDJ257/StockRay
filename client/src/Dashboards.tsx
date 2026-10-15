@@ -1,7 +1,7 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCatalog } from './api';
-import { store } from './store';
+import { authMessage, store } from './store';
 import { formatNumber, type CatalogStock, type Stock } from './types';
 
 function StockCard({ stock, remove }: { stock: Stock; remove?: () => void }) {
@@ -70,14 +70,24 @@ export function PublicDashboard() {
   </main>;
 }
 
-export function ErrorDisplay({ message, close }: { message: string; close: () => void }) {
-  return <div className="error-blimp">
-    <div className="error-text">
-      <div className="error-title">Something went wrong</div>
-      <div className="error-message">{message}</div>
+export function ErrorDisplay({ message, close, page = false }: { message: string; close: () => void; page?: boolean }) {
+  const unauthorized = message === authMessage;
+  const Heading = page ? 'h1' : 'h2';
+  return <section className={page ? 'error-page' : 'error-notice'} aria-label="Dashboard message">
+    {page && <header className="error-masthead">StockRay<span>Private dashboard</span></header>}
+    <div className="error-blimp">
+      <div className="error-context"><span className="error-mark" aria-hidden="true">!</span><span>{unauthorized ? 'Account access' : 'Dashboard update'}</span></div>
+      <div className="error-text" role="alert">
+        <Heading className="error-title">{unauthorized ? 'Your dashboard is waiting.' : 'Something went wrong.'}</Heading>
+        <p className="error-message">{unauthorized ? 'Log in or create an account to view your private dashboard and follow your saved symbols.' : message}</p>
+      </div>
+      <div className="error-actions">
+        <p>{page ? 'You can return to the public overview using the button below.' : 'Close this message to return to your dashboard.'}</p>
+        <button className="error-close-btn" type="button" onClick={close}>{page ? 'Back to public dashboard' : 'Close message'}<span aria-hidden="true">&rarr;</span></button>
+      </div>
     </div>
-    <button className="error-close-btn" onClick={close}>Close</button>
-  </div>;
+    {page && <footer className="error-footer">StockRay<span>Keep your perspective on the market.</span></footer>}
+  </section>;
 }
 
 export function PrivateDashboard() {
@@ -121,7 +131,7 @@ export function PrivateDashboard() {
 
   return <>
     <main id="mainRoot">
-      {privateError ? <ErrorDisplay message={privateError} close={() => navigate('/PublicDash/')} /> : authenticated === null ? null : <>
+      {privateError ? <ErrorDisplay page message={privateError} close={() => navigate('/PublicDash/')} /> : authenticated === null ? null : <>
         <div id="stocks" className="privateDash">
           <div className="bubble-add" onClick={() => void openStocks()}><div className="bubble-add-content">+</div></div>
           {privateStocks.map(stock => <StockCard key={stock.id} stock={stock} remove={() => void remove(stock)} />)}
