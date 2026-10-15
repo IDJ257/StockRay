@@ -1,4 +1,4 @@
-StockRay Description
+# StockRay Description
 StockRay is a web app still in development. The app's main purpose is to allow users to look at numerous stock symbols and add some of them to their private dashboard so they can watch
 the symbol's constant changing properties like the price they opened to, the current price and how high and low the price went.
 ##
