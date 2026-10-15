@@ -89,24 +89,7 @@
 }
 
 .indicator-arrow {
-    position: absolute;
-    top: 15%;
-    /*right: 1450px;*/
-    width: 33px;
-    height: 33px;
-    border-top: 4px solid rgba(255,255,255,0.34);
-    border-right: 4px solid rgba(255,255,255,0.34);
-    transform: translateY(-50%) rotate(45deg);
-    opacity: 0.7;
     pointer-events: none;
-    animation: inwardArrow 1.8s ease-in-out infinite;
-    transition: opacity 0.35s ease, transform 0.35s ease;
-}
-.private-page .indicator-arrow {
-    left:15px;
-    top: 10%;
-}
-.public-page .indicator-arrow {
     position: fixed;
     left: 0;
     right: auto;
@@ -123,7 +106,7 @@
     animation: none;
 }
 
-.public-page .indicator-arrow::after {
+.indicator-arrow::after {
     content: '';
     position: absolute;
     top: 20px;
@@ -133,23 +116,6 @@
     border-top: 2px solid rgba(242, 245, 248, 0.65);
     border-right: 2px solid rgba(242, 245, 248, 0.65);
     transform: rotate(45deg);
-}
-
-@keyframes inwardArrow {
-    0% {
-        transform: translateY(-50%) translateX(0) rotate(45deg);
-        opacity: 0.35;
-    }
-
-    50% {
-        transform: translateY(-50%) translateX(-10px) rotate(45deg);
-        opacity: 0.8;
-    }
-
-    100% {
-        transform: translateY(-50%) translateX(0) rotate(45deg);
-        opacity: 0.35;
-    }
 }
 
 @media (prefers-reduced-motion: reduce) {

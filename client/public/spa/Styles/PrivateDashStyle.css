@@ -1,14 +1,124 @@
 ﻿
 .privateDash {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 65px;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 40px 24px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
     box-sizing: border-box;
     align-content: start;
 }
+
+.watchlist-page {
+    width: min(1200px, calc(100% - 112px));
+    min-height: 100dvh;
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding-bottom: 28px;
+    display: flex;
+    flex-direction: column;
+}
+.watchlist-brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 26px 0;
+    border-bottom: 1px solid rgba(242, 245, 248, 0.12);
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+.watchlist-brand span,
+.watchlist-section-heading > span,
+.watchlist-footer,
+.watchlist-modal-brand span {
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.4px;
+    color: rgba(242, 245, 248, 0.65);
+}
+.watchlist-intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 38px 0 26px;
+}
+.watchlist-intro h1 { margin: 0; font-size: clamp(28px, 3.5vw, 40px); font-weight: 600; letter-spacing: -1px; line-height: 1.2; }
+.watchlist-intro p { margin: 12px 0 0; color: rgba(242, 245, 248, 0.72); font-size: 14px; line-height: 1.7; }
+.watchlist-add {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+    background: rgba(47, 93, 140, 0.8);
+    color: #F2F5F8;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.watchlist-add:hover { background: #2F5D8C; }
+.watchlist-add > span { font-size: 20px; line-height: 1; }
+.watchlist-add-primary {
+    position: relative;
+    border-color: rgba(117, 148, 179, 0.55);
+    box-shadow: 0 0 10px rgba(117, 148, 179, 0.2), inset 0 0 6px rgba(117, 148, 179, 0.08);
+}
+.watchlist-add-stripe {
+    position: absolute;
+    inset: -1px;
+    width: calc(100% + 2px);
+    height: calc(100% + 2px);
+    overflow: visible;
+    pointer-events: none;
+}
+.watchlist-add-stripe rect {
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
+    fill: none;
+    stroke: rgba(242, 245, 248, 0.7);
+    stroke-width: 1;
+    stroke-linecap: round;
+    stroke-dasharray: 25 75;
+    filter: drop-shadow(0 0 2px rgba(117, 148, 179, 0.6));
+    animation: watchlist-border-stripe 5s linear infinite;
+}
+@keyframes watchlist-border-stripe {
+    from { stroke-dashoffset: 0; }
+    to { stroke-dashoffset: -100; }
+}
+.watchlist-summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 0 0 32px;
+    padding: 20px 0;
+    border: 1px solid rgba(242, 245, 248, 0.14);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.04);
+}
+.watchlist-summary > div { padding: 0 24px; }
+.watchlist-summary > div + div { border-left: 1px solid rgba(242, 245, 248, 0.12); }
+.watchlist-summary dt { font-size: 12px; color: rgba(242, 245, 248, 0.7); }
+.watchlist-summary dd { margin: 8px 0 0; font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.watchlist-above dd { color: #9AE6B4; }
+.watchlist-below dd { color: #FF8A8A; }
+.watchlist-section-heading { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 18px; }
+.watchlist-section-heading h2 { margin: 0; font-size: 18px; font-weight: 500; letter-spacing: 0.2px; }
+.watchlist-empty { padding: 40px 24px; text-align: center; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(242, 245, 248, 0.14); border-radius: 28px; }
+.watchlist-empty-mark { display: grid; place-items: center; width: 44px; height: 44px; margin: 0 auto 20px; border: 1px solid rgba(242, 245, 248, 0.18); border-radius: 14px; background: rgba(255, 255, 255, 0.06); color: rgba(242, 245, 248, 0.7); font-size: 26px; font-weight: 300; }
+.watchlist-empty h3 { margin: 0; font-size: 22px; font-weight: 500; }
+.watchlist-empty p { max-width: 390px; margin: 12px auto 24px; font-size: 14px; line-height: 1.7; color: rgba(242, 245, 248, 0.65); }
+.watchlist-footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(242, 245, 248, 0.12); line-height: 1.6; }
+.watchlist-page > section { margin-bottom: 40px; }
+.watchlist-footer > span { color: #F2F5F8; font-weight: 500; }
+.watchlist-footer p { margin: 0; }
+body.watchlist-modal-open { overflow: hidden; }
 
 body {
     margin: 0;
@@ -179,25 +289,26 @@ body.logged-in [data-logout] {
 
 
 .bubble {
-    width: 240px;
+    min-width: 0;
+    box-sizing: border-box;
     position: relative;
-    margin-left: 10%;
     background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.19);
     border-radius: 28px;
-    padding: 20px;
-    min-height: 180px;
+    padding: 24px 20px;
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12);
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
 }
 
     .bubble h3 {
         margin: 0;
-        font-size: 18px;
+        padding: 0 28px;
+        font-size: 16px;
+        font-weight: 500;
         letter-spacing: 0.4px;
         text-align: center;
     }
@@ -210,13 +321,13 @@ body.logged-in [data-logout] {
     width: 28px;
     height: 28px;
     border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 50%;
+    border-radius: 10px;
     background: rgba(255, 255, 255, 0.08);
     color: rgba(255, 255, 255, 0.75);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    font-size: 20px;
     font-weight: 600;
     cursor: pointer;
     backdrop-filter: blur(10px);
@@ -239,7 +350,6 @@ body.logged-in [data-logout] {
 .micro-grid {
     display: grid;
     grid-template-columns: repeat(8, minmax(0, 1fr));
-    transform: translateY(15px);
     gap: 10px;
 }
 
@@ -247,71 +357,19 @@ body.logged-in [data-logout] {
     grid-column: 1 / span 8;
     order: 1;
     text-align: center;
-    font-size: 25px;
+    font-size: 30px;
     font-weight: 700;
     color: #ffffff;
     letter-spacing: -1px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    font-variant-numeric: tabular-nums;
 }
-
-/*huu togav*/
-.bubble-add {
-
-    width: 240px;
-    position: relative;
-    margin-left:10%;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 28px;
-    padding: 20px;
-    min-height: 180px;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    min-height: 180px; /* keep same size as your bubbles */
-    transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
-}
-
-
-    .bubble-add:hover {
-        background: rgba(255, 255, 255, 0.14);
-        border-color: rgba(255, 255, 255, 0.35);
-        transform: scale(1.02);
-    }
-
-
-.bubble-add-content {
-    font-size: 64px;
-    font-weight: 300;
-    color: rgba(255, 255, 255, 0.85);
-    line-height: 1;
-    user-select: none;
-    transition: transform 0.15s ease, color 0.2s ease;
-}
-
-
-.bubble-add:hover .bubble-add-content {
-    color: #ffffff;
-    transform: scale(1.1);
-}
-
-.bubble-add:active .bubble-add-content {
-    transform: scale(0.95);
-}
-
 
 .micro-pill {
     background: rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 999px;
-    padding: 8px 12px;
+    padding: 8px 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -319,7 +377,8 @@ body.logged-in [data-logout] {
 }
 
     .micro-pill span {
-        font-size: 15px;
+        font-size: 14px;
+        font-variant-numeric: tabular-nums;
         font-weight: 600;
         margin-left: 8px;
         color: #F2F5F8;
@@ -350,9 +409,11 @@ body.logged-in [data-logout] {
     }
 
 .modal-overlay {
+    box-sizing: border-box;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.5);
+    padding: 24px;
+    background: rgba(5, 12, 25, 0.55);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -360,18 +421,31 @@ body.logged-in [data-logout] {
     transition: opacity 0.2s ease;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
+    z-index: 30;
 }
 
 .modal {
-    width: min(900px, 92vw);
-    background: #0B1F3B;
-    color: white;
-    border-radius: 16px;
-    padding: 24px;
+    position: relative;
+    box-sizing: border-box;
+    width: min(620px, 100%);
+    background: rgba(18, 58, 99, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    color: #F2F5F8;
+    border-radius: 28px;
+    padding: 30px;
     display: flex;
     flex-direction: column;
-    max-height: 80vh;
+    max-height: calc(100dvh - 48px);
+    overflow-y: auto;
 }
+.modal-header { flex-shrink: 0; }
+.watchlist-modal-brand { padding: 0 40px 20px 0; margin-bottom: 24px; border-bottom: 1px solid rgba(242, 245, 248, 0.12); font-size: 20px; font-weight: 600; }
+.watchlist-modal-brand span { display: block; margin-top: 6px; }
+.modal-header h2 { margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.6px; }
+.modal-header p { margin: 10px 0 0; font-size: 13px; line-height: 1.7; color: rgba(242, 245, 248, 0.72); }
+.watchlist-modal-close { position: absolute; top: 26px; right: 26px; width: 32px; height: 32px; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 10px; background: rgba(255, 255, 255, 0.04); color: #F2F5F8; font-size: 22px; cursor: pointer; }
+.watchlist-modal-close:hover { background: rgba(255, 255, 255, 0.12); }
 
 /* hidden state */
 .hidden {
@@ -412,17 +486,20 @@ body.logged-in [data-logout] {
     font-size: 15px;
     font-weight: 500;
 }
+.item-saved { display: block; margin-top: 4px; color: rgba(242, 245, 248, 0.6); font-size: 12px; font-weight: 400; }
+.watchlist-add-error { flex-shrink: 0; margin: 0 0 16px; padding: 12px 14px; border: 1px solid rgba(255, 138, 138, 0.25); border-radius: 12px; background: rgba(255, 255, 255, 0.04); color: #FF8A8A; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
 
 /* Checkbox styling */
 .item input[type="checkbox"] {
     margin-left: 12px;
     width: 18px;
     height: 18px;
-    accent-color: #4DA3FF;
+    accent-color: #7594b3;
     cursor: pointer;
 }
 
 .item-list {
+    list-style: none;
     flex: 1;
     min-height: 0;
     overflow-y: auto;
@@ -443,21 +520,28 @@ body.logged-in [data-logout] {
     }
 
     .item-list::-webkit-scrollbar-thumb {
-        background: rgba(77, 163, 255, 0.35); 
+        background: rgba(117, 148, 179, 0.35);
         border-radius: 10px;
-        border: 2px solid #0B1F3B; 
+        border: 2px solid #0B1F3B;
     }
 
 .modal-footer {
     display: flex;
-    justify-content: flex-end; 
+    justify-content: flex-end;
     gap: 12px;
-    margin-top: 16px;
+    flex-shrink: 0;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(242, 245, 248, 0.12);
 }
+.watchlist-selection { margin-right: auto; font-size: 12px; color: rgba(242, 245, 248, 0.65); }
 
 .btn {
     padding: 10px 16px;
-    border-radius: 10px;
+    border-radius: 14px;
+    font-family: inherit;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -476,13 +560,36 @@ body.logged-in [data-logout] {
     }
 
 .btn-add {
-    background: #4DA3FF;
-    color: #0B1F3B;
-    font-weight: 600;
+    background: rgba(47, 93, 140, 0.8);
+    border-color: rgba(255, 255, 255, 0.18);
+    color: #F2F5F8;
 }
 
     .btn-add:hover {
-        background: #6bb4ff;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 16px rgba(77, 163, 255, 0.25);
+        background: #2F5D8C;
     }
+
+.btn:disabled { opacity: 0.6; cursor: wait; }
+.watchlist-add:focus-visible, .bubble-close:focus-visible, .btn:focus-visible, .watchlist-modal-close:focus-visible, .item:focus-within { outline: 2px solid #F2F5F8; outline-offset: 3px; }
+@media (max-width: 900px) {
+    .privateDash { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+    .watchlist-page { width: calc(100% - 64px); margin-left: 44px; margin-right: 20px; }
+    .watchlist-brand { padding: 22px 0; font-size: 19px; }
+    .watchlist-brand span { font-size: 11px; }
+    .watchlist-intro { padding: 28px 0 22px; }
+    .watchlist-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0; }
+    .watchlist-summary > div { padding: 16px; }
+    .watchlist-summary > div:nth-child(3) { border-left: 0; }
+    .watchlist-summary > div:nth-child(n + 3) { border-top: 1px solid rgba(242, 245, 248, 0.12); }
+    .privateDash { grid-template-columns: minmax(0, 1fr); }
+    .modal-overlay { padding: 16px; }
+    .modal { padding: 24px; max-height: calc(100dvh - 32px); }
+    .watchlist-modal-close { top: 20px; right: 20px; }
+    .watchlist-selection { flex-basis: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .watchlist-add-stripe rect { animation: none; }
+    .watchlist-add, .bubble-close, .modal-overlay, .item, .btn { transition: none; }
+}
