@@ -75,17 +75,23 @@ export function AuthModal({ kind, open, close, registered }: {
 
   return <div id={`${kind}Overlay`} className={`modal-overlay${visible ? ' is-visible' : ''}`} hidden={hidden}
     onClick={event => { if (event.target === event.currentTarget) close(); }}>
-    <div className="modal-card auth-card" role="dialog" aria-modal="true" aria-labelledby={`${kind}Title`}>
-      <button id={`${kind}Close`} className="modal-close" type="button" aria-label={register ? 'Close registration' : 'Close login'} onClick={close}>×</button>
-      <h2 id={`${kind}Title`} className="auth-title">{register ? 'Create your account' : 'Welcome back'}</h2>
-      <p className="auth-subtitle">{register ? 'Register to start building a private dashboard.' : 'Log in to view your private dashboard.'}</p>
-      <form id={`${kind}Form`} className="auth-form" ref={form} onSubmit={submit}>
-        {register && <label className="auth-field">Username<input name="username" type="text" autoComplete="username" placeholder="username" required /></label>}
-        <label className="auth-field">Email<input name="email" type={register ? 'email' : 'text'} autoComplete="email" placeholder={register ? 'email' : 'Your email'} required /></label>
-        <label className="auth-field">Password<input name="password" type="password" minLength={register ? 8 : undefined} autoComplete={register ? 'new-password' : 'current-password'} placeholder={register ? 'password' : 'Your password'} required /></label>
-        <button className="auth-button" type="submit" disabled={busy}>{register ? 'Register' : 'Login'}</button>
+    <div className="modal-card auth-card" role="dialog" aria-modal="true" aria-labelledby={`${kind}Title`} aria-describedby={`${kind}Subtitle`}>
+      <button id={`${kind}Close`} className="modal-close" type="button" aria-label={register ? 'Close registration' : 'Close login'} onClick={close}>&times;</button>
+      <div className="auth-brand">StockRay<span>{register ? 'Create an account' : 'Account access'}</span></div>
+      <header className="auth-heading">
+        <p className="auth-eyebrow">Your private dashboard</p>
+        <h2 id={`${kind}Title`} className="auth-title">{register ? 'Make room for your watchlist.' : 'Welcome back.'}</h2>
+        <p id={`${kind}Subtitle`} className="auth-subtitle">{register ? 'Create your account to keep the symbols you follow together in one place.' : 'Log in to pick up where you left off and follow your saved symbols.'}</p>
+      </header>
+      <form id={`${kind}Form`} className="auth-form" ref={form} onSubmit={submit} aria-busy={busy}>
+        {register && <label className="auth-field">Username<input name="username" type="text" autoComplete="username" placeholder="Choose a username" required /></label>}
+        <label className="auth-field">Email<input name="email" type={register ? 'email' : 'text'} autoComplete="email" placeholder="Your email address" required /></label>
+        <label className="auth-field">Password<input name="password" type="password" minLength={register ? 8 : undefined} autoComplete={register ? 'new-password' : 'current-password'} placeholder={register ? 'Create a password' : 'Your password'} aria-describedby={register ? 'registerPasswordHint' : undefined} required /></label>
+        {register && <p id="registerPasswordHint" className="auth-field-hint">Use at least 8 characters.</p>}
+        <button className="auth-button" type="submit" disabled={busy}>{busy ? (register ? 'Creating account…' : 'Logging in…') : (register ? 'Create account' : 'Log in')}<span aria-hidden="true">&rarr;</span></button>
         <div id={`${kind}Message`} className={`auth-message${isError ? ' error' : message ? ' success' : ''}`} role="status" aria-live="polite">{message}</div>
       </form>
+      <footer className="auth-footer">{register ? 'Your watchlist, alongside the public overview.' : 'Your saved symbols. Your own perspective.'}</footer>
     </div>
   </div>;
 }
