@@ -44,14 +44,15 @@ export function App() {
 
   return <>
     <div className="menu-shell">
-      <div className="menu-edge" aria-hidden="true" />
+      <button className="menu-edge" type="button" aria-label="Open main menu" />
       <nav className="side-menu" aria-label="Main menu">
+        <div className="menu-brand">StockRay<span>Your dashboards</span></div>
         <Link className="menu-link" to={privatePage ? '/PublicDash/' : '/PrivateDash/'}>{privatePage ? 'Public  Dashboard' : 'Private Dashboard'}</Link>
         {!privatePage && <>
-          <a className="menu-link" data-register-open onClick={() => setModal('register')}>Register</a>
-          <a className="menu-link" data-login-open onClick={() => setModal('login')}>Login</a>
+          <button type="button" className="menu-link" data-register-open onClick={() => setModal('register')}>Register</button>
+          <button type="button" className="menu-link" data-login-open onClick={() => setModal('login')}>Login</button>
         </>}
-        <a className="menu-link" data-logout onClick={() => void logout()}>Log out</a>
+        <button type="button" className="menu-link" data-logout onClick={() => void logout()}>Log out</button>
       </nav>
     </div>
     {privatePage ? <PrivateDashboard /> : <PublicDashboard />}

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCatalog } from './api';
 import { store } from './store';
@@ -19,14 +19,54 @@ function StockCard({ stock, remove }: { stock: Stock; remove?: () => void }) {
 
 export function PublicDashboard() {
   const { publicStocks } = useSyncExternalStore(store.subscribe, store.getSnapshot);
+  const featured = publicStocks.slice(0, 3);
+  const remaining = publicStocks.slice(3);
+  const movements = publicStocks.reduce((counts, stock) => {
+    if (!Number.isFinite(stock.currentPrice) || !Number.isFinite(stock.open)) return counts;
+    if (stock.currentPrice > stock.open) counts.above++;
+    else if (stock.currentPrice < stock.open) counts.below++;
+    else counts.unchanged++;
+    return counts;
+  }, { above: 0, below: 0, unchanged: 0 });
+  const hasStocks = publicStocks.length > 0;
+
   return <main className="page">
-    <section id="dashboardGrid" className="grid" aria-live="polite">
-      {publicStocks.map(stock => <Fragment key={stock.id}>
-        <StockCard stock={stock} />
-        {stock.id === 3 && <div className="divider" />}
-      </Fragment>)}
+    <header className="dashboard-header">
+      <div className="dashboard-brand">StockRay<span>Public overview</span></div>
+      <div className="dashboard-intro">
+        <h1>Market Overview</h1>
+        <p>A closer look at current prices, opening values, and daily highs and lows.</p>
+      </div>
+      <dl className="dashboard-summary" aria-label="Summary of displayed stocks">
+        <div><dt>Symbols in view</dt><dd>{hasStocks ? publicStocks.length : '—'}</dd></div>
+        <div className="summary-above"><dt>Above open</dt><dd>{hasStocks ? movements.above : '—'}</dd></div>
+        <div className="summary-below"><dt>Below open</dt><dd>{hasStocks ? movements.below : '—'}</dd></div>
+        <div><dt>Unchanged</dt><dd>{hasStocks ? movements.unchanged : '—'}</dd></div>
+      </dl>
+    </header>
+    <section className="dashboard-section" aria-labelledby="featured-heading">
+      <div className="dashboard-section-heading">
+        <h2 id="featured-heading">At a glance</h2>
+        <span>Current · Open · High · Low</span>
+      </div>
+      {hasStocks ? <div id="dashboardGrid" className="grid">
+        {featured.map(stock => <StockCard key={stock.id} stock={stock} />)}
+      </div> : <p className="dashboard-waiting" role="status">Waiting for stock data…</p>}
     </section>
-    <div className="indicator-arrow" />
+    {remaining.length > 0 && <>
+      <hr className="divider" />
+      <section className="dashboard-section dashboard-more" tabIndex={0} aria-labelledby="more-heading">
+        <div className="dashboard-section-heading">
+          <h2 id="more-heading">More symbols</h2>
+          <span className="dashboard-reveal-hint">Hover or focus to explore</span>
+        </div>
+        <div className="grid">
+          {remaining.map(stock => <StockCard key={stock.id} stock={stock} />)}
+        </div>
+      </section>
+    </>}
+    <footer className="dashboard-footer"><span>StockRay</span><p>Simulated prices · A view of the stocks in focus.</p></footer>
+    <div className="indicator-arrow" aria-hidden="true" />
   </main>;
 }
 
