@@ -13,12 +13,13 @@ the symbol's constant changing properties like the price they opened to, the cur
 
 🗃️ Database access using Entity Framework Core (SQL Server / SQLite depending on configuration)
 
- 
+💻 Using typescript + React for front-end design.
 
 ##
 
 ## Requirements
 - .NET 9 SDK
+- .Node.JS
 
 - Visual Studio 2022
 
@@ -42,8 +43,12 @@ for ASP.NET to serve. Edit frontend files in `client/` and rebuild.
 
 ## Using git Clone and CLI tools(.NET9, EntityFramework CLI)
 ```bash
-git clone <https://github.com/IDJ257/StockRay.git>
+git clone <https://github.com/IDJ257/StockRay.git> <FolderOfChoice>
+cd FolderOfChoice
 cd StockRay
+cd StockRay/client
+npm run CI
+npm run build
 dotnet ef migrations add Init
 dotnet ef database update
 dotnet run 
