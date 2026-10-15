@@ -366,10 +366,10 @@ FodyWeavers.xsd
 /StockRay/Other/SymbolSeed.cs
 /StockRay/StockRay.http
 /StockRay/Old/ActiveGroup.cs
-/StockRay/Migrations/20260504163201_InitialMigration.cs
-/StockRay/Migrations/20260511212745_SymbolEnhancement.cs
-/StockRay/Migrations/ApplicationDbContextModelSnapshot.cs
-/StockRay/Migrations/20260504163201_InitialMigration.Designer.cs
-/StockRay/Migrations/20260511212745_SymbolEnhancement.Designer.cs
+# EF Core migrations, generated metadata, and model snapshots
+/StockRay/Migrations/**/*.cs
+
+# Local background-job checks
+/checks/BackgroundJobs/
 client/README.md
 client/tests/realtime.test.ts
